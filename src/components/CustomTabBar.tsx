@@ -1,12 +1,9 @@
 import { BlurView } from 'expo-blur';
 import {
-    Bell,
     Bot,
-    CreditCard,
     Home,
     Search,
     Settings,
-    User,
     Wallet
 } from 'lucide-react-native';
 import React from 'react';
@@ -51,11 +48,6 @@ const tabItems: TabItem[] = [
     icon: Search,
   },
   {
-    key: 'subscription',
-    title: 'Subscription',
-    icon: CreditCard,
-  },
-  {
     key: 'wallet',
     title: 'Wallet',
     icon: Wallet,
@@ -66,18 +58,8 @@ const tabItems: TabItem[] = [
     icon: Bot,
   },
   {
-    key: 'notifications',
-    title: 'Notifications',
-    icon: Bell,
-  },
-  {
-    key: 'profile',
-    title: 'Profile',
-    icon: User,
-  },
-  {
-    key: 'settings',
-    title: 'Settings',
+    key: 'more',
+    title: 'More',
     icon: Settings,
   },
 ];
