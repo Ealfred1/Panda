@@ -1,23 +1,18 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
-import { CustomTabBar } from '../../src/components/CustomTabBar';
-import { useCurrentTheme } from '../../src/store/themeStore';
+import { PremiumTabBar } from '../../src/components/PremiumTabBar';
 
-export default function TabLayout() {
-  const theme = useCurrentTheme();
-
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarStyle: {
-          display: 'none', // Hide default tab bar since we're using custom one
-        },
+        tabBarStyle: { display: 'none' }, // Hide default tab bar
       }}
-      tabBar={(props) => <CustomTabBar {...props} />}
+      tabBar={(props) => <PremiumTabBar {...props} />}
     >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: 'Home',
         }}
@@ -29,21 +24,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="wallet"
+        name="portfolio"
         options={{
-          title: 'Wallet',
+          title: 'Portfolio',
         }}
       />
       <Tabs.Screen
-        name="bot"
+        name="profile"
         options={{
-          title: 'Bot Analysis',
-        }}
-      />
-      <Tabs.Screen
-        name="more"
-        options={{
-          title: 'More',
+          title: 'Profile',
         }}
       />
     </Tabs>

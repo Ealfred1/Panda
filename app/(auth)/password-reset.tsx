@@ -18,51 +18,91 @@ import Animated, {
 import { EnhancedInput } from '../../src/components/EnhancedInput';
 import { PasswordStrengthIndicator } from '../../src/components/PasswordStrengthIndicator';
 import { PremiumButton } from '../../src/components/PremiumButton';
-import { useAppStore } from '../../src/store/appStore';
 import { useCurrentTheme } from '../../src/store/themeStore';
-import { RegistrationFormData, registrationSchema } from '../../src/utils/validationSchemas';
+import { PasswordResetFormData, passwordResetSchema } from '../../src/utils/validationSchemas';
 
-export default function SignUp() {
+export default function PasswordReset() {
   const router = useRouter();
   const theme = useCurrentTheme();
-  const { setUser, setAuthenticated } = useAppStore();
   const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const {
     control,
     handleSubmit,
     formState: { errors, isValid },
     watch,
-  } = useForm<RegistrationFormData>({
-    resolver: zodResolver(registrationSchema),
+  } = useForm<PasswordResetFormData>({
+    resolver: zodResolver(passwordResetSchema),
     mode: 'onChange',
   });
 
   const watchedPassword = watch('password');
 
-  const handleSignUp = async (data: RegistrationFormData) => {
+  const handleResetPassword = async (data: PasswordResetFormData) => {
     setIsLoading(true);
     
-    // Simulate signup process
+    // Simulate API call
     setTimeout(() => {
-      const newUser = {
-        id: Date.now().toString(),
-        name: `${data.firstName} ${data.lastName}`,
-        email: data.email,
-        username: data.username,
-        avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
-      };
-      
-      setUser(newUser);
       setIsLoading(false);
-      // Navigate to success screen instead of setting authenticated
-      router.push('/(auth)/success');
+      setIsSuccess(true);
     }, 2000);
   };
 
-  const handleSignIn = () => {
+  const handleBackToLogin = () => {
     router.push('/(auth)/login');
   };
+
+  if (isSuccess) {
+    return (
+      <ScrollView 
+        style={[styles.container, { backgroundColor: theme.colors.background.primary }]}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Success Header */}
+        <Animated.View 
+          entering={FadeInDown.delay(200).springify()}
+          style={styles.header}
+        >
+          <View style={styles.successContainer}>
+            <View style={[styles.successIcon, { backgroundColor: theme.colors.success[500] }]}>
+              <Ionicons name="checkmark" size={32} color={theme.colors.text.inverse} />
+            </View>
+            
+            <Text style={[styles.successTitle, { color: theme.colors.text.primary }]}>
+              Password Reset Successfully!
+            </Text>
+            <Text style={[styles.successSubtitle, { color: theme.colors.text.secondary }]}>
+              Your password has been updated. You can now sign in with your new password.
+            </Text>
+          </View>
+        </Animated.View>
+
+        {/* Success Content */}
+        <Animated.View 
+          entering={FadeInUp.delay(400).springify()}
+          style={styles.content}
+        >
+          <View style={styles.actionButtons}>
+            <PremiumButton
+              title="Sign In Now"
+              onPress={handleBackToLogin}
+              size="lg"
+              style={styles.loginButton}
+              leftIcon={<Ionicons name="log-in" size={20} color={theme.colors.text.inverse} />}
+            />
+          </View>
+        </Animated.View>
+
+        {/* Decorative Elements */}
+        <Animated.View 
+          entering={SlideInLeft.delay(600).springify()}
+          style={[styles.decorativeCircle, { backgroundColor: theme.colors.success[500] }]}
+        />
+      </ScrollView>
+    );
+  }
 
   return (
     <ScrollView 
@@ -84,15 +124,15 @@ export default function SignUp() {
         
         <View style={styles.logoContainer}>
           <View style={[styles.logo, { backgroundColor: theme.colors.primary[500] }]}>
-            <Text style={styles.logoText}>🐼</Text>
+            <Ionicons name="key" size={32} color={theme.colors.text.inverse} />
           </View>
         </View>
         
         <Text style={[styles.title, { color: theme.colors.text.primary }]}>
-          Create Account
+          Reset Your Password
         </Text>
         <Text style={[styles.subtitle, { color: theme.colors.text.secondary }]}>
-          Join Panda and start your financial journey
+          Create a new strong password for your account
         </Text>
       </Animated.View>
 
@@ -101,92 +141,13 @@ export default function SignUp() {
         entering={FadeInUp.delay(400).springify()}
         style={styles.form}
       >
-        {/* Name Fields */}
-        <View style={styles.nameRow}>
-          <Controller
-            control={control}
-            name="firstName"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <View style={styles.nameInput}>
-                <EnhancedInput
-                  label="First Name"
-                  placeholder="Enter first name"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  error={errors.firstName?.message}
-                  leftIcon="person-outline"
-                  required
-                />
-              </View>
-            )}
-          />
-          
-          <Controller
-            control={control}
-            name="lastName"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <View style={styles.nameInput}>
-                <EnhancedInput
-                  label="Last Name"
-                  placeholder="Enter last name"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  error={errors.lastName?.message}
-                  leftIcon="person-outline"
-                  required
-                />
-              </View>
-            )}
-          />
-        </View>
-
-        <Controller
-          control={control}
-          name="username"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <EnhancedInput
-              label="Username"
-              placeholder="Choose a username"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.username?.message}
-              leftIcon="at-outline"
-              autoCapitalize="none"
-              required
-            />
-          )}
-        />
-
-        <Controller
-          control={control}
-          name="email"
-          render={({ field: { onChange, onBlur, value } }) => (
-            <EnhancedInput
-              label="Email Address"
-              placeholder="Enter your email"
-              value={value}
-              onChangeText={onChange}
-              onBlur={onBlur}
-              error={errors.email?.message}
-              leftIcon="mail-outline"
-              keyboardType="email-address"
-              autoCapitalize="none"
-              autoComplete="email"
-              required
-            />
-          )}
-        />
-
         <Controller
           control={control}
           name="password"
           render={({ field: { onChange, onBlur, value } }) => (
             <EnhancedInput
-              label="Password"
-              placeholder="Create a password"
+              label="New Password"
+              placeholder="Enter your new password"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -211,8 +172,8 @@ export default function SignUp() {
           name="confirmPassword"
           render={({ field: { onChange, onBlur, value } }) => (
             <EnhancedInput
-              label="Confirm Password"
-              placeholder="Confirm your password"
+              label="Confirm New Password"
+              placeholder="Confirm your new password"
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}
@@ -225,13 +186,13 @@ export default function SignUp() {
         />
 
         <PremiumButton
-          title="Create Account"
-          onPress={handleSubmit(handleSignUp)}
+          title="Reset Password"
+          onPress={handleSubmit(handleResetPassword)}
           disabled={!isValid || isLoading}
           loading={isLoading}
           size="lg"
           style={styles.submitButton}
-          leftIcon={<Ionicons name="person-add" size={20} color={theme.colors.text.inverse} />}
+          leftIcon={<Ionicons name="key" size={20} color={theme.colors.text.inverse} />}
         />
       </Animated.View>
 
@@ -241,9 +202,9 @@ export default function SignUp() {
         style={styles.footer}
       >
         <Text style={[styles.footerText, { color: theme.colors.text.secondary }]}>
-          Already have an account?{' '}
+          Remember your password?{' '}
         </Text>
-        <TouchableOpacity onPress={handleSignIn}>
+        <TouchableOpacity onPress={handleBackToLogin}>
           <Text style={[styles.footerLink, { color: theme.colors.primary[500] }]}>
             Sign In
           </Text>
@@ -253,11 +214,11 @@ export default function SignUp() {
       {/* Decorative Elements */}
       <Animated.View 
         entering={SlideInLeft.delay(800).springify()}
-        style={[styles.decorativeCircle, { backgroundColor: theme.colors.secondary[500] }]}
+        style={[styles.decorativeCircle, { backgroundColor: theme.colors.primary[500] }]}
       />
       <Animated.View 
         entering={SlideInLeft.delay(1000).springify()}
-        style={[styles.decorativeCircle, { backgroundColor: theme.colors.primary[500] }]}
+        style={[styles.decorativeCircle, { backgroundColor: theme.colors.secondary[500] }]}
       />
     </ScrollView>
   );
@@ -302,11 +263,8 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 4,
   },
-  logoText: {
-    fontSize: 40,
-  },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 8,
     textAlign: 'center',
@@ -320,13 +278,6 @@ const styles = StyleSheet.create({
   form: {
     paddingHorizontal: 20,
     marginBottom: 40,
-  },
-  nameRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  nameInput: {
-    flex: 1,
   },
   submitButton: {
     marginTop: 20,
@@ -345,6 +296,46 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  successContainer: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  successIcon: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  successTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  successSubtitle: {
+    fontSize: 16,
+    lineHeight: 24,
+    textAlign: 'center',
+  },
+  content: {
+    paddingHorizontal: 20,
+  },
+  actionButtons: {
+    gap: 16,
+  },
+  loginButton: {
+    marginBottom: 0,
+  },
   decorativeCircle: {
     position: 'absolute',
     width: 120,
@@ -352,6 +343,6 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     opacity: 0.1,
     left: -60,
-    top: 300,
+    top: 200,
   },
 });
