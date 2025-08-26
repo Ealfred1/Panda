@@ -1,17 +1,17 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import {
-    Image,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
-    ViewStyle,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  ViewStyle,
 } from 'react-native';
 import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from 'react-native-reanimated';
 import { useCurrentTheme } from '../store/themeStore';
 
@@ -68,8 +68,10 @@ export const PremiumCard: React.FC<PremiumCardProps> = ({
 
   const getCardStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
-      borderRadius: theme.borderRadius.xl,
+      borderRadius: theme.borderRadius.lg,
       overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: '#f0f0f0',
     };
 
     const sizeStyles = {
@@ -80,33 +82,17 @@ export const PremiumCard: React.FC<PremiumCardProps> = ({
 
     const variantStyles = {
       default: {
-        backgroundColor: theme.colors.background.card,
-        borderWidth: 1,
-        borderColor: theme.colors.border.primary,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 8,
-        elevation: 4,
+        backgroundColor: '#ffffff',
       },
       elevated: {
-        backgroundColor: theme.colors.background.card,
-        borderWidth: 0,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.2,
-        shadowRadius: 16,
-        elevation: 8,
+        backgroundColor: '#ffffff',
+        borderWidth: 1,
+        borderColor: '#e5e5e5',
       },
       glassmorphism: {
-        backgroundColor: 'rgba(45, 45, 45, 0.8)',
+        backgroundColor: '#ffffff',
         borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.3,
-        shadowRadius: 12,
-        elevation: 6,
+        borderColor: '#e5e5e5',
       },
     };
 
@@ -133,7 +119,7 @@ export const PremiumCard: React.FC<PremiumCardProps> = ({
   const getImageStyle = () => ({
     width: '100%' as const,
     height: size === 'sm' ? 120 : size === 'md' ? 160 : 200,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.borderRadius.md,
     marginBottom: theme.spacing.md,
   });
 

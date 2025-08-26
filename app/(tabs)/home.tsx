@@ -1,516 +1,590 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import {
-    Dimensions,
-    FlatList,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from 'react-native';
+import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
-    FadeInDown,
-    FadeInUp,
-    SlideInRight,
+  FadeInDown,
+  FadeInUp
 } from 'react-native-reanimated';
-import { PremiumCard } from '../../src/components/PremiumCard';
 import { useCurrentTheme } from '../../src/store/themeStore';
 
-const { width } = Dimensions.get('window');
-
-// Dummy data for demonstration
-const marketTrends = [
-  {
-    id: '1',
-    symbol: 'BTC',
-    name: 'Bitcoin',
-    price: '$43,250',
-    change: '+2.45%',
-    isPositive: true,
-    image: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=400&h=300&fit=crop',
-  },
-  {
-    id: '2',
-    symbol: 'ETH',
-    name: 'Ethereum',
-    price: '$2,680',
-    change: '+1.23%',
-    isPositive: true,
-    image: 'https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=400&h=300&fit=crop',
-  },
-  {
-    id: '3',
-    symbol: 'AAPL',
-    name: 'Apple Inc.',
-    price: '$185.50',
-    change: '-0.85%',
-    isPositive: false,
-    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=300&fit=crop',
-  },
-];
-
-const portfolioSummary = {
-  totalValue: '$12,450.80',
-  dailyChange: '+$234.50',
-  dailyChangePercent: '+1.92%',
-  isPositive: true,
-};
-
-const quickActions = [
-  {
-    id: '1',
-    title: 'Buy Crypto',
-    subtitle: 'Purchase digital assets',
-    icon: 'add-circle-outline',
-    color: '#10B981',
-    onPress: () => {},
-  },
-  {
-    id: '2',
-    title: 'Trade Stocks',
-    subtitle: 'Invest in companies',
-    icon: 'trending-up-outline',
-    color: '#3B82F6',
-    onPress: () => {},
-  },
-  {
-    id: '3',
-    title: 'View Portfolio',
-    subtitle: 'Check your investments',
-    icon: 'pie-chart-outline',
-    color: '#8B5CF6',
-    onPress: () => {},
-  },
-  {
-    id: '4',
-    title: 'Market News',
-    subtitle: 'Stay informed',
-    icon: 'newspaper-outline',
-    color: '#F59E0B',
-    onPress: () => {},
-  },
-];
-
-const newsItems = [
-  {
-    id: '1',
-    title: 'Bitcoin Reaches New All-Time High',
-    subtitle: 'Cryptocurrency market shows strong momentum',
-    image: 'https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=400&h=300&fit=crop',
-    time: '2 hours ago',
-  },
-  {
-    id: '2',
-    title: 'Tech Stocks Rally on AI Breakthrough',
-    subtitle: 'Major tech companies lead market gains',
-    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=300&fit=crop',
-    time: '4 hours ago',
-  },
-];
+const ORANGE = '#f58220';
+const BLUE = '#0a2472';
+const BG = '#fff';
+const GRAY = '#f5f6fa';
+const DARK = '#222';
+const LIGHT = '#888';
+const BORDER = '#f0f0f0';
 
 export default function HomeScreen() {
   const theme = useCurrentTheme();
-  const [isLoading, setIsLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
-  const handleRefresh = () => {
-    setIsLoading(true);
-    setTimeout(() => setIsLoading(false), 2000);
+  // Mock user data for forex trading
+  const user = {
+    first_name: 'John',
+    last_name: 'Trader',
+    email: 'john.trader@forex.com',
   };
 
+  // Mock forex account data
+  const accountData = {
+    balance: '$25,000.00',
+    equity: '$25,450.00',
+    margin: '$2,500.00',
+    freeMargin: '$22,950.00',
+    profit: '+$450.00',
+    profitPercentage: '+1.8%',
+  };
+
+  // Mock market watchlist
+  const marketWatchlist = [
+    { symbol: 'EUR/USD', price: '1.0854', change: '+0.0024', changePercent: '+0.22%', isPositive: true },
+    { symbol: 'GBP/USD', price: '1.2647', change: '-0.0018', changePercent: '-0.14%', isPositive: false },
+    { symbol: 'USD/JPY', price: '149.85', change: '+0.45', changePercent: '+0.30%', isPositive: true },
+    { symbol: 'AUD/USD', price: '0.6589', change: '+0.0012', changePercent: '+0.18%', isPositive: true },
+  ];
+
+  // Mock trading signals
+  const tradingSignals = [
+    { pair: 'EUR/USD', type: 'BUY', entry: '1.0850', target: '1.0900', stopLoss: '1.0800', confidence: '85%' },
+    { pair: 'GBP/USD', type: 'SELL', entry: '1.2650', target: '1.2600', stopLoss: '1.2700', confidence: '78%' },
+    { pair: 'USD/JPY', type: 'BUY', entry: '149.80', target: '150.50', stopLoss: '149.30', confidence: '82%' },
+  ];
+
+  const onRefresh = async () => {
+    setRefreshing(true);
+    setIsRefreshing(true);
+    // Simulate refresh
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setRefreshing(false);
+    setIsRefreshing(false);
+  };
+
+  // Header with avatar and greeting
   const renderHeader = () => (
-    <Animated.View entering={FadeInDown.delay(200).springify()} style={styles.header}>
-      <View style={styles.headerContent}>
-        <View>
-          <Text style={[styles.greeting, { color: theme.colors.text.primary }]}>
-            Good morning! 👋
-          </Text>
-          <Text style={[styles.userName, { color: theme.colors.text.secondary }]}>
-            Welcome back, Alex
-          </Text>
+    <Animated.View entering={FadeInDown.delay(200).springify()}>
+      <View style={styles.headerContainer}>
+        <View style={styles.headerContent}>
+          <View style={styles.profileInfo}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {user.first_name?.[0] || 'U'}
+              </Text>
+            </View>
+            <View style={styles.profileText}>
+              <Text style={styles.greetingText}>Hello {user.first_name || 'User'},</Text>
+              <Text style={styles.welcomeText}>Welcome to Panda Forex!</Text>
+            </View>
+          </View>
+          
+          <View style={styles.headerActions}>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="notifications-outline" size={24} color={DARK} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="settings-outline" size={24} color={DARK} />
+            </TouchableOpacity>
+          </View>
         </View>
-        
-        <TouchableOpacity style={styles.notificationButton}>
-          <Ionicons name="notifications-outline" size={24} color={theme.colors.text.primary} />
-          <View style={[styles.notificationBadge, { backgroundColor: theme.colors.primary[500] }]} />
-        </TouchableOpacity>
       </View>
     </Animated.View>
   );
 
-  const renderPortfolioCard = () => (
-    <Animated.View entering={FadeInUp.delay(400).springify()}>
-      <PremiumCard
-        variant="elevated"
-        size="lg"
-        style={styles.portfolioCard}
-        gradient
-        gradientColors={[theme.colors.primary[500], theme.colors.primary[600]]}
-      >
-        <View style={styles.portfolioContent}>
-          <View style={styles.portfolioHeader}>
-            <Text style={[styles.portfolioTitle, { color: theme.colors.text.inverse }]}>
-              Portfolio Value
-            </Text>
-            <Ionicons name="trending-up" size={24} color={theme.colors.text.inverse} />
+  // Account overview cards
+  const renderAccountOverview = () => (
+    <Animated.View entering={FadeInUp.delay(300).springify()}>
+      <Text style={styles.sectionTitle}>Account Overview</Text>
+      <View style={styles.accountGrid}>
+        <View style={styles.accountCard}>
+          <View style={styles.accountCardHeader}>
+            <Ionicons name="wallet" size={20} color={ORANGE} />
+            <Text style={styles.accountCardTitle}>Balance</Text>
           </View>
-          
-          <Text style={[styles.portfolioValue, { color: theme.colors.text.inverse }]}>
-            {portfolioSummary.totalValue}
-          </Text>
-          
-          <View style={styles.portfolioChange}>
-            <Text style={[styles.changeText, { color: theme.colors.text.inverse }]}>
-              {portfolioSummary.dailyChange} ({portfolioSummary.dailyChangePercent})
-            </Text>
-            <Text style={[styles.changeLabel, { color: theme.colors.text.inverse }]}>
-              Today
-            </Text>
-          </View>
+          <Text style={styles.accountCardValue}>{accountData.balance}</Text>
         </View>
-      </PremiumCard>
+        
+        <View style={styles.accountCard}>
+          <View style={styles.accountCardHeader}>
+            <Ionicons name="trending-up" size={20} color={ORANGE} />
+            <Text style={styles.accountCardTitle}>Equity</Text>
+          </View>
+          <Text style={styles.accountCardValue}>{accountData.equity}</Text>
+        </View>
+        
+        <View style={styles.accountCard}>
+          <View style={styles.accountCardHeader}>
+            <Ionicons name="shield" size={20} color={ORANGE} />
+            <Text style={styles.accountCardTitle}>Margin</Text>
+          </View>
+          <Text style={styles.accountCardValue}>{accountData.margin}</Text>
+        </View>
+        
+        <View style={styles.accountCard}>
+          <View style={styles.accountCardHeader}>
+            <Ionicons name="checkmark-circle" size={20} color={ORANGE} />
+            <Text style={styles.accountCardTitle}>Free Margin</Text>
+          </View>
+          <Text style={styles.accountCardValue}>{accountData.freeMargin}</Text>
+        </View>
+      </View>
+      
+      <View style={styles.profitCard}>
+        <View style={styles.profitInfo}>
+          <Text style={styles.profitLabel}>Today's Profit</Text>
+          <Text style={[styles.profitValue, { color: accountData.profit.startsWith('+') ? '#10b981' : '#ef4444' }]}>
+            {accountData.profit}
+          </Text>
+        </View>
+        <Text style={[styles.profitPercentage, { color: accountData.profit.startsWith('+') ? '#10b981' : '#ef4444' }]}>
+          {accountData.profitPercentage}
+        </Text>
+      </View>
     </Animated.View>
   );
 
-  const renderQuickActions = () => (
-    <Animated.View entering={FadeInUp.delay(500).springify()}>
-      <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>
-        Quick Actions
-      </Text>
+  // Market watchlist
+  const renderMarketWatchlist = () => (
+    <Animated.View entering={FadeInUp.delay(400).springify()}>
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Market Watchlist</Text>
+        <TouchableOpacity style={styles.viewAllButton}>
+          <Text style={styles.viewAllText}>View All</Text>
+        </TouchableOpacity>
+      </View>
       
-      <View style={styles.quickActionsGrid}>
-        {quickActions.map((action) => (
-          <TouchableOpacity
-            key={action.id}
-            style={styles.quickActionItem}
-            onPress={action.onPress}
-          >
-            <View style={[styles.actionIcon, { backgroundColor: action.color }]}>
-              <Ionicons name={action.icon as any} size={20} color="white" />
+      <View style={styles.card}>
+        {marketWatchlist.map((pair, index) => (
+          <View key={index} style={[styles.pairRow, index === marketWatchlist.length - 1 && { borderBottomWidth: 0 }]}>
+            <View style={styles.pairInfo}>
+              <Text style={styles.pairSymbol}>{pair.symbol}</Text>
+              <Text style={styles.pairName}>
+                {pair.symbol === 'EUR/USD' ? 'Euro / US Dollar' :
+                 pair.symbol === 'GBP/USD' ? 'British Pound / US Dollar' :
+                 pair.symbol === 'USD/JPY' ? 'US Dollar / Japanese Yen' :
+                 'Australian Dollar / US Dollar'}
+              </Text>
             </View>
-            <Text style={[styles.actionTitle, { color: theme.colors.text.primary }]}>
-              {action.title}
-            </Text>
-            <Text style={[styles.actionSubtitle, { color: theme.colors.text.secondary }]}>
-              {action.subtitle}
-            </Text>
-          </TouchableOpacity>
+            
+            <View style={styles.pairPrice}>
+              <Text style={styles.priceValue}>{pair.price}</Text>
+              <View style={styles.changeContainer}>
+                <Ionicons 
+                  name={pair.isPositive ? 'trending-up' : 'trending-down'} 
+                  size={16} 
+                  color={pair.isPositive ? '#10b981' : '#ef4444'} 
+                />
+                <Text style={[styles.changeText, { color: pair.isPositive ? '#10b981' : '#ef4444' }]}>
+                  {pair.change} ({pair.changePercent})
+                </Text>
+              </View>
+            </View>
+          </View>
         ))}
       </View>
     </Animated.View>
   );
 
-  const renderMarketTrends = () => (
-    <Animated.View entering={FadeInUp.delay(600).springify()}>
+  // Trading signals
+  const renderTradingSignals = () => (
+    <Animated.View entering={FadeInUp.delay(500).springify()}>
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>
-          Market Trends
-        </Text>
-        <TouchableOpacity>
-          <Text style={[styles.viewAllText, { color: theme.colors.primary[500] }]}>
-            View All
-          </Text>
+        <Text style={styles.sectionTitle}>Trading Signals</Text>
+        <TouchableOpacity style={styles.viewAllButton}>
+          <Text style={styles.viewAllText}>View All</Text>
         </TouchableOpacity>
       </View>
       
-      <FlatList
-        data={marketTrends}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.marketTrendsList}
-        renderItem={({ item }) => (
-          <PremiumCard
-            size="sm"
-            style={styles.marketTrendCard}
-            onPress={() => {}}
-          >
-            <Image source={{ uri: item.image }} style={styles.marketImage} />
-            <View style={styles.marketInfo}>
-              <Text style={[styles.marketSymbol, { color: theme.colors.text.primary }]}>
-                {item.symbol}
-              </Text>
-              <Text style={[styles.marketName, { color: theme.colors.text.secondary }]}>
-                {item.name}
-              </Text>
-              <Text style={[styles.marketPrice, { color: theme.colors.text.primary }]}>
-                {item.price}
-              </Text>
-              <Text
-                style={[
-                  styles.marketChange,
-                  { color: item.isPositive ? theme.colors.success[500] : theme.colors.error[500] },
-                ]}
-              >
-                {item.change}
-              </Text>
+      <View style={styles.signalsContainer}>
+        {tradingSignals.map((signal, index) => (
+          <View key={index} style={styles.signalCard}>
+            <View style={styles.signalHeader}>
+              <View style={[styles.signalType, { backgroundColor: signal.type === 'BUY' ? '#10b981' : '#ef4444' }]}>
+                <Text style={styles.signalTypeText}>{signal.type}</Text>
+              </View>
+              <Text style={styles.signalPair}>{signal.pair}</Text>
+              <View style={styles.confidenceBadge}>
+                <Text style={styles.confidenceText}>{signal.confidence}</Text>
+              </View>
             </View>
-          </PremiumCard>
-        )}
-        keyExtractor={(item) => item.id}
-      />
+            
+            <View style={styles.signalDetails}>
+              <View style={styles.signalRow}>
+                <Text style={styles.signalLabel}>Entry:</Text>
+                <Text style={styles.signalValue}>{signal.entry}</Text>
+              </View>
+              <View style={styles.signalRow}>
+                <Text style={styles.signalLabel}>Target:</Text>
+                <Text style={styles.signalValue}>{signal.target}</Text>
+              </View>
+              <View style={styles.signalRow}>
+                <Text style={styles.signalLabel}>Stop Loss:</Text>
+                <Text style={styles.signalValue}>{signal.stopLoss}</Text>
+              </View>
+            </View>
+          </View>
+        ))}
+      </View>
     </Animated.View>
   );
 
-  const renderNewsSection = () => (
-    <Animated.View entering={FadeInUp.delay(700).springify()}>
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>
-          Latest News
-        </Text>
-        <TouchableOpacity>
-          <Text style={[styles.viewAllText, { color: theme.colors.primary[500] }]}>
-            View All
-          </Text>
+  // Quick actions
+  const renderQuickActions = () => (
+    <Animated.View entering={FadeInUp.delay(600).springify()}>
+      <Text style={styles.sectionTitle}>Quick Actions</Text>
+      <View style={styles.actionsGrid}>
+        <TouchableOpacity style={styles.actionCard}>
+          <View style={[styles.actionIcon, { backgroundColor: ORANGE }]}>
+            <Ionicons name="add-circle" size={24} color="white" />
+          </View>
+          <Text style={styles.actionText}>New Trade</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.actionCard}>
+          <View style={[styles.actionIcon, { backgroundColor: BLUE }]}>
+            <Ionicons name="arrow-down-circle" size={24} color="white" />
+          </View>
+          <Text style={styles.actionText}>Deposit</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.actionCard}>
+          <View style={[styles.actionIcon, { backgroundColor: '#10b981' }]}>
+            <Ionicons name="arrow-up-circle" size={24} color="white" />
+          </View>
+          <Text style={styles.actionText}>Withdraw</Text>
+        </TouchableOpacity>
+        
+        <TouchableOpacity style={styles.actionCard}>
+          <View style={[styles.actionIcon, { backgroundColor: '#8b5cf6' }]}>
+            <Ionicons name="analytics" size={24} color="white" />
+          </View>
+          <Text style={styles.actionText}>Analytics</Text>
         </TouchableOpacity>
       </View>
-      
-      {newsItems.map((news) => (
-        <PremiumCard
-          key={news.id}
-          size="md"
-          style={styles.newsCard}
-          onPress={() => {}}
-        >
-          <Image source={{ uri: news.image }} style={styles.newsImage} />
-          <View style={styles.newsContent}>
-            <Text style={[styles.newsTitle, { color: theme.colors.text.primary }]}>
-              {news.title}
-            </Text>
-            <Text style={[styles.newsSubtitle, { color: theme.colors.text.secondary }]}>
-              {news.subtitle}
-            </Text>
-            <Text style={[styles.newsTime, { color: theme.colors.text.tertiary }]}>
-              {news.time}
-            </Text>
-          </View>
-        </PremiumCard>
-      ))}
     </Animated.View>
-  );
-
-  const renderDecorativeElements = () => (
-    <>
-      <Animated.View
-        entering={SlideInRight.delay(800).springify()}
-        style={[styles.decorativeCircle, { backgroundColor: theme.colors.primary[500] }]}
-      />
-      <Animated.View
-        entering={SlideInRight.delay(1000).springify()}
-        style={[styles.decorativeCircle, { backgroundColor: theme.colors.secondary[500] }]}
-      />
-    </>
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {renderHeader()}
-        {renderPortfolioCard()}
-        {renderQuickActions()}
-        {renderMarketTrends()}
-        {renderNewsSection()}
-        {renderDecorativeElements()}
-      </ScrollView>
-    </View>
+    <ScrollView 
+      style={styles.container}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[ORANGE]}
+          tintColor={ORANGE}
+        />
+      }
+    >
+      {renderHeader()}
+      {renderAccountOverview()}
+      {renderMarketWatchlist()}
+      {renderTradingSignals()}
+      {renderQuickActions()}
+      
+      <View style={styles.bottomSpacing} />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: GRAY,
   },
-  scrollContent: {
-    paddingBottom: 120, // Space for tab bar
-  },
-  header: {
-    paddingTop: 60,
+  headerContainer: {
+    backgroundColor: BG,
     paddingHorizontal: 20,
+    paddingTop: 20,
     paddingBottom: 24,
+    marginBottom: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+    borderWidth: 1,
+    borderColor: BORDER,
+    borderTopWidth: 0,
   },
   headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  greeting: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  userName: {
-    fontSize: 16,
-    opacity: 0.8,
-  },
-  notificationButton: {
-    position: 'relative',
-    padding: 8,
-  },
-  notificationBadge: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-  },
-  portfolioCard: {
-    marginHorizontal: 20,
-    marginBottom: 32,
-  },
-  portfolioContent: {
-    alignItems: 'center',
-  },
-  portfolioHeader: {
+  profileInfo: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 16,
   },
-  portfolioTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginRight: 8,
-  },
-  portfolioValue: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  portfolioChange: {
+  avatar: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: ORANGE,
     alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 16,
+    borderWidth: 3,
+    borderColor: 'white',
   },
-  changeText: {
+  avatarText: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  profileText: {
+    flex: 1,
+  },
+  greetingText: {
     fontSize: 16,
-    fontWeight: '600',
+    color: LIGHT,
     marginBottom: 4,
   },
-  changeLabel: {
-    fontSize: 14,
-    opacity: 0.8,
+  welcomeText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: DARK,
+  },
+  headerActions: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  actionButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: GRAY,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: BORDER,
   },
   sectionTitle: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: '700',
+    color: DARK,
     marginBottom: 16,
     paddingHorizontal: 20,
-  },
-  quickActionsGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 20,
-    marginBottom: 32,
-  },
-  quickActionItem: {
-    width: (width - 48) / 2,
-    alignItems: 'center',
-    padding: 16,
-    marginBottom: 16,
-  },
-  actionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  actionTitle: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-    textAlign: 'center',
-  },
-  actionSubtitle: {
-    fontSize: 12,
-    opacity: 0.7,
-    textAlign: 'center',
   },
   sectionHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
     marginBottom: 16,
+    paddingHorizontal: 20,
+  },
+  viewAllButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: GRAY,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: BORDER,
   },
   viewAllText: {
+    color: ORANGE,
     fontSize: 14,
     fontWeight: '600',
   },
-  marketTrendsList: {
+  accountGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
     paddingHorizontal: 20,
-    paddingBottom: 32,
-  },
-  marketTrendCard: {
-    width: 160,
-    marginRight: 16,
-  },
-  marketImage: {
-    width: '100%',
-    height: 80,
-    borderRadius: 12,
-    marginBottom: 12,
-  },
-  marketInfo: {
-    alignItems: 'center',
-  },
-  marketSymbol: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  marketName: {
-    fontSize: 12,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  marketPrice: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 4,
-  },
-  marketChange: {
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  newsCard: {
-    marginHorizontal: 20,
     marginBottom: 16,
   },
-  newsImage: {
-    width: '100%',
-    height: 120,
-    borderRadius: 12,
-    marginBottom: 12,
+  accountCard: {
+    width: '48%',
+    backgroundColor: BG,
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: BORDER,
   },
-  newsContent: {
+  accountCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  accountCardTitle: {
+    fontSize: 12,
+    color: LIGHT,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+  accountCardValue: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: DARK,
+  },
+  profitCard: {
+    backgroundColor: BG,
+    marginHorizontal: 20,
+    borderRadius: 16,
+    padding: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: BORDER,
+    marginBottom: 24,
+  },
+  profitInfo: {
     flex: 1,
   },
-  newsTitle: {
+  profitLabel: {
+    fontSize: 14,
+    color: LIGHT,
+    marginBottom: 4,
+  },
+  profitValue: {
+    fontSize: 24,
+    fontWeight: '700',
+  },
+  profitPercentage: {
     fontSize: 16,
     fontWeight: '600',
-    marginBottom: 8,
-    lineHeight: 22,
   },
-  newsSubtitle: {
-    fontSize: 14,
-    marginBottom: 8,
-    lineHeight: 20,
-    opacity: 0.8,
+  card: {
+    backgroundColor: BG,
+    marginHorizontal: 20,
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: BORDER,
+    overflow: 'hidden',
+    marginBottom: 24,
   },
-  newsTime: {
+  pairRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1,
+    borderColor: BORDER,
+  },
+  pairInfo: {
+    flex: 1,
+  },
+  pairSymbol: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: DARK,
+    marginBottom: 4,
+  },
+  pairName: {
     fontSize: 12,
-    opacity: 0.6,
+    color: LIGHT,
   },
-  decorativeCircle: {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    opacity: 0.1,
-    right: -60,
-    top: 400,
+  pairPrice: {
+    alignItems: 'flex-end',
+  },
+  priceValue: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: DARK,
+    marginBottom: 4,
+  },
+  changeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  changeText: {
+    fontSize: 12,
+    fontWeight: '500',
+    marginLeft: 4,
+  },
+  signalsContainer: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  signalCard: {
+    backgroundColor: BG,
+    borderRadius: 16,
+    padding: 18,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: BORDER,
+  },
+  signalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  signalType: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    marginRight: 12,
+  },
+  signalTypeText: {
+    color: 'white',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  signalPair: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: DARK,
+    flex: 1,
+  },
+  confidenceBadge: {
+    backgroundColor: GRAY,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: BORDER,
+  },
+  confidenceText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: ORANGE,
+  },
+  signalDetails: {
+    gap: 8,
+  },
+  signalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  signalLabel: {
+    fontSize: 14,
+    color: LIGHT,
+  },
+  signalValue: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: DARK,
+  },
+  actionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  actionCard: {
+    width: '48%',
+    backgroundColor: BG,
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: BORDER,
+  },
+  actionIcon: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  actionText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: DARK,
+    textAlign: 'center',
+  },
+  bottomSpacing: {
+    height: 100,
   },
 });

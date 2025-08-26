@@ -1,29 +1,106 @@
-import { Ionicons } from '@expo/vector-icons';
-import { BlurView } from 'expo-blur';
+import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
-import {
-    Dimensions,
-    Pressable,
-    StyleSheet,
-    Text,
-    View,
-} from 'react-native';
-import Animated, {
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
-} from 'react-native-reanimated';
-import { useCurrentTheme } from '../store/themeStore';
+import { Text, TouchableOpacity, View } from 'react-native';
 
-const { width } = Dimensions.get('window');
-
-interface TabItem {
-  key: string;
+interface TabIconProps {
+  focused: boolean;
+  icon: string;
   title: string;
-  icon: keyof typeof Ionicons.glyphMap;
-  iconFilled: keyof typeof Ionicons.glyphMap;
+  badge?: number;
 }
+
+const TabIcon: React.FC<TabIconProps> = ({ focused, icon, title, badge }) => {
+  if (focused) {
+    return (
+      <View style={{
+        flexDirection: 'row',
+        width: '100%',
+        flex: 1,
+        minWidth: 112,
+        minHeight: 64,
+        marginTop: 16,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 50,
+        overflow: 'hidden',
+        backgroundColor: '#f58220',
+      }}>
+        <MaterialIcons 
+          name={icon as any} 
+          size={24} 
+          color="white" 
+        />
+        <Text style={{ 
+          fontFamily: 'Poppins_500Medium',
+          color: 'white',
+          fontSize: 16,
+          marginLeft: 8,
+        }}>
+          {title}
+        </Text>
+        {badge && badge > 0 && (
+          <View style={{
+            position: 'absolute',
+            top: -4,
+            right: -4,
+            backgroundColor: '#ef4444',
+            borderRadius: 9,
+            minWidth: 18,
+            height: 18,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <Text style={{ 
+              fontFamily: 'Poppins_500Medium',
+              color: 'white',
+              fontSize: 12,
+            }}>
+              {badge}
+            </Text>
+          </View>
+        )}
+      </View>
+    );
+  }
+
+  return (
+    <View style={{
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 16,
+      borderRadius: 50,
+    }}>
+      <MaterialIcons 
+        name={icon as any} 
+        size={24} 
+        color="#666" 
+      />
+      {badge && badge > 0 && (
+        <View style={{
+          position: 'absolute',
+          top: -4,
+          right: -4,
+          backgroundColor: '#ef4444',
+          borderRadius: 9,
+          minWidth: 18,
+          height: 18,
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}>
+          <Text style={{ 
+            fontFamily: 'Poppins_500Medium',
+            color: 'white',
+            fontSize: 12,
+          }}>
+            {badge}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+};
 
 interface PremiumTabBarProps {
   state: any;
@@ -31,213 +108,105 @@ interface PremiumTabBarProps {
   navigation: any;
 }
 
-const tabs: TabItem[] = [
-  {
-    key: 'home',
-    title: 'Home',
-    icon: 'home-outline',
-    iconFilled: 'home',
-  },
-  {
-    key: 'explore',
-    title: 'Explore',
-    icon: 'compass-outline',
-    iconFilled: 'compass',
-  },
-  {
-    key: 'portfolio',
-    title: 'Portfolio',
-    icon: 'pie-chart-outline',
-    iconFilled: 'pie-chart',
-  },
-  {
-    key: 'profile',
-    title: 'Profile',
-    icon: 'person-outline',
-    iconFilled: 'person',
-  },
-];
-
-export const PremiumTabBar: React.FC<PremiumTabBarProps> = ({
-  state,
-  descriptors,
-  navigation,
+export const PremiumTabBar: React.FC<PremiumTabBarProps> = ({ 
+  state, 
+  descriptors, 
+  navigation 
 }) => {
-  const theme = useCurrentTheme();
-  const activeIndex = state.index;
-
-  const renderTab = (tab: TabItem, index: number) => {
-    const isActive = index === activeIndex;
-    const animatedValue = useSharedValue(isActive ? 1 : 0);
-
-    React.useEffect(() => {
-      animatedValue.value = withSpring(isActive ? 1 : 0, {
-        damping: 15,
-        stiffness: 150,
-      });
-    }, [isActive]);
-
-    const animatedStyle = useAnimatedStyle(() => ({
-      transform: [
-        {
-          scale: interpolate(
-            animatedValue.value,
-            [0, 1],
-            [1, 1.1]
-          ),
-        },
-        {
-          translateY: interpolate(
-            animatedValue.value,
-            [0, 1],
-            [0, -8]
-          ),
-        },
-      ],
-    }));
-
-    const iconAnimatedStyle = useAnimatedStyle(() => ({
-      transform: [
-        {
-          scale: interpolate(
-            animatedValue.value,
-            [0, 1],
-            [1, 1.2]
-          ),
-        },
-      ],
-    }));
-
-    const onPress = () => {
-      const event = navigation.emit({
-        type: 'tabPress',
-        target: tab.key,
-        canPreventDefault: true,
-      });
-
-      if (!event.defaultPrevented) {
-        navigation.navigate(tab.key);
-      }
-    };
-
-    return (
-      <Pressable
-        key={tab.key}
-        onPress={onPress}
-        style={styles.tabItem}
-        android_ripple={{ color: theme.colors.primary[500], borderless: true }}
-      >
-        <Animated.View style={[styles.tabContent, animatedStyle]}>
-          <Animated.View style={[styles.iconContainer, iconAnimatedStyle]}>
-            <Ionicons
-              name={isActive ? tab.iconFilled : tab.icon}
-              size={24}
-              color={
-                isActive
-                  ? theme.colors.primary[500]
-                  : theme.colors.text.secondary
-              }
-            />
-          </Animated.View>
-          
-          <Text
-            style={[
-              styles.tabLabel,
-              {
-                color: isActive
-                  ? theme.colors.primary[500]
-                  : theme.colors.text.secondary,
-                fontWeight: isActive ? '600' : '500',
-              },
-            ]}
-          >
-            {tab.title}
-          </Text>
-          
-          {isActive && (
-            <Animated.View
-              style={[
-                styles.activeIndicator,
-                {
-                  backgroundColor: theme.colors.primary[500],
-                },
-                animatedStyle,
-              ]}
-            />
-          )}
-        </Animated.View>
-      </Pressable>
-    );
-  };
-
   return (
-    <View style={styles.container}>
-      <BlurView intensity={20} style={styles.blurContainer}>
-        <View style={styles.tabBar}>
-          {tabs.map((tab, index) => renderTab(tab, index))}
-        </View>
-      </BlurView>
+    <View style={{
+      position: 'absolute',
+      bottom: 36,
+      left: 19,
+      right: 19,
+      height: 52,
+      backgroundColor: 'white',
+      borderRadius: 50,
+      overflow: 'hidden',
+      borderWidth: 1,
+      borderColor: '#f0f0f0',
+      shadowColor: '#ddd',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.0,
+      shadowRadius: 4,
+      elevation: 4,
+    }}>
+      <View style={{
+        flexDirection: 'row',
+        width: '100%',
+        height: '100%',
+      }}>
+        {state.routes.map((route: any, index: number) => {
+          const { options } = descriptors[route.key];
+          const label = options.tabBarLabel ?? options.title ?? route.name;
+
+          const isFocused = state.index === index;
+
+          const onPress = () => {
+            const event = navigation.emit({
+              type: 'tabPress',
+              target: route.key,
+              canPreventDefault: true,
+            });
+
+            if (!isFocused && !event.defaultPrevented) {
+              navigation.navigate(route.name);
+            }
+          };
+
+          const onLongPress = () => {
+            navigation.emit({
+              type: 'tabLongPress',
+              target: route.key,
+            });
+          };
+
+          // Map route names to our icons and titles
+          const getTabInfo = (routeName: string) => {
+            switch (routeName) {
+              case 'home':
+                return { icon: 'home', title: 'Home' };
+              case 'markets':
+                return { icon: 'trending-up', title: 'Markets' };
+              case 'wallet':
+                return { icon: 'account-balance-wallet', title: 'Wallet' };
+              case 'profile':
+                return { icon: 'person', title: 'Profile' };
+              default:
+                return { icon: 'home', title: 'Home' };
+            }
+          };
+
+          const { icon, title } = getTabInfo(route.name);
+          const badge = undefined; // No badges for now
+
+          return (
+            <TouchableOpacity
+              key={route.key}
+              accessibilityRole="button"
+              accessibilityState={isFocused ? { selected: true } : {}}
+              accessibilityLabel={options.tabBarAccessibilityLabel ?? label}
+              testID={options.tabBarTestID}
+              onPress={onPress}
+              onLongPress={onLongPress}
+              style={{
+                flex: 1,
+                width: '100%',
+                height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              <TabIcon 
+                focused={isFocused} 
+                icon={icon} 
+                title={title}
+                badge={badge}
+              />
+            </TouchableOpacity>
+          );
+        })}
+      </View>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1000,
-  },
-  blurContainer: {
-    overflow: 'hidden',
-    borderRadius: 24,
-    marginHorizontal: 16,
-    marginBottom: 16,
-  },
-  tabBar: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(45, 45, 45, 0.8)',
-    borderRadius: 24,
-    paddingHorizontal: 8,
-    paddingVertical: 12,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 24,
-    elevation: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  tabItem: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 4,
-  },
-  tabContent: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-  },
-  iconContainer: {
-    marginBottom: 4,
-    padding: 8,
-    borderRadius: 12,
-  },
-  tabLabel: {
-    fontSize: 12,
-    textAlign: 'center',
-  },
-  activeIndicator: {
-    position: 'absolute',
-    bottom: -8,
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-  },
-});

@@ -70,16 +70,13 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
 
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
-      borderRadius: theme.borderRadius.xl,
+      borderRadius: theme.borderRadius.lg,
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
       width: '100%',
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.15,
-      shadowRadius: 12,
-      elevation: 8,
+      borderWidth: 1,
+      borderColor: 'transparent',
     };
 
     const sizeStyles = {
@@ -103,20 +100,19 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
     const variantStyles = {
       primary: {
         backgroundColor: theme.colors.primary[500],
-        borderWidth: 0,
+        borderColor: theme.colors.primary[500],
       },
       secondary: {
         backgroundColor: theme.colors.secondary[500],
-        borderWidth: 0,
+        borderColor: theme.colors.secondary[500],
       },
       outline: {
         backgroundColor: 'transparent',
-        borderWidth: 2,
         borderColor: theme.colors.primary[500],
       },
       ghost: {
         backgroundColor: 'transparent',
-        borderWidth: 0,
+        borderColor: 'transparent',
       },
     };
 
@@ -126,7 +122,6 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
       ...variantStyles[variant],
       ...(disabled && {
         opacity: 0.5,
-        shadowOpacity: 0.05,
       }),
     };
   };

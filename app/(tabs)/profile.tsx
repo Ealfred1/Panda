@@ -1,523 +1,466 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import {
-    Dimensions,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
-} from 'react-native';
-import Animated, {
-    FadeInDown,
-    FadeInUp,
-    SlideInLeft,
-} from 'react-native-reanimated';
-import { PremiumButton } from '../../src/components/PremiumButton';
-import { PremiumCard } from '../../src/components/PremiumCard';
+import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useCurrentTheme } from '../../src/store/themeStore';
 
-const { width } = Dimensions.get('window');
+const ORANGE = '#f58220';
+const BLUE = '#0a2472';
+const BG = '#fff';
+const GRAY = '#f5f6fa';
+const DARK = '#222';
+const LIGHT = '#888';
+const BORDER = '#f0f0f0';
 
-// Dummy data for demonstration
-const userProfile = {
-  name: 'Alex Johnson',
-  email: 'alex.johnson@panda.com',
-  avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face',
-  bio: 'Passionate investor focused on long-term growth and sustainable returns.',
-  joinDate: 'March 2023',
-  verificationStatus: 'verified',
-  totalTrades: 156,
-  successRate: '78%',
-  portfolioValue: '$12,450.80',
-};
-
-const profileStats = [
-  {
-    id: '1',
-    label: 'Total Trades',
-    value: '156',
-    icon: 'trending-up',
-    color: '#10B981',
-  },
-  {
-    id: '2',
-    label: 'Success Rate',
-    value: '78%',
-    icon: 'checkmark-circle',
-    color: '#3B82F6',
-  },
-  {
-    id: '3',
-    label: 'Portfolio Value',
-    value: '$12,450',
-    icon: 'wallet',
-    color: '#8B5CF6',
-  },
-  {
-    id: '4',
-    label: 'Member Since',
-    value: 'Mar 2023',
-    icon: 'calendar',
-    color: '#F59E0B',
-  },
-];
-
-const profileMenuItems = [
-  {
-    id: '1',
-    title: 'Account Settings',
-    subtitle: 'Manage your personal information',
-    icon: 'person-outline',
-    color: '#3B82F6',
-    onPress: () => {},
-  },
-  {
-    id: '2',
-    title: 'Security & Privacy',
-    subtitle: 'Password, 2FA, and privacy settings',
-    icon: 'shield-outline',
-    color: '#10B981',
-    onPress: () => {},
-  },
-  {
-    id: '3',
-    title: 'Payment Methods',
-    subtitle: 'Manage your payment options',
-    icon: 'card-outline',
-    color: '#8B5CF6',
-    onPress: () => {},
-  },
-  {
-    id: '4',
-    title: 'Notifications',
-    subtitle: 'Customize your notification preferences',
-    icon: 'notifications-outline',
-    color: '#F59E0B',
-    onPress: () => {},
-  },
-  {
-    id: '5',
-    title: 'Support & Help',
-    subtitle: 'Get help and contact support',
-    icon: 'help-circle-outline',
-    color: '#EF4444',
-    onPress: () => {},
-  },
-  {
-    id: '6',
-    title: 'About Panda',
-    subtitle: 'App version and legal information',
-    icon: 'information-circle-outline',
-    color: '#6B7280',
-    onPress: () => {},
-  },
-];
-
-const recentActivity = [
-  {
-    id: '1',
-    type: 'trade',
-    title: 'Bought 0.1 BTC',
-    subtitle: 'Purchase completed successfully',
-    time: '2 hours ago',
-    icon: 'trending-up',
-    color: '#10B981',
-  },
-  {
-    id: '2',
-    type: 'verification',
-    title: 'Account Verified',
-    subtitle: 'Identity verification completed',
-    time: '1 day ago',
-    icon: 'checkmark-circle',
-    color: '#3B82F6',
-  },
-  {
-    id: '3',
-    type: 'deposit',
-    title: 'Deposit Added',
-    subtitle: '$1,000 added to your account',
-    time: '3 days ago',
-    icon: 'add-circle',
-    color: '#8B5CF6',
-  },
-];
+function getInitials(first = '', last = '') {
+  if (!first && !last) return '';
+  return `${first?.[0] || ''}${last?.[0] || ''}`.toUpperCase();
+}
 
 export default function ProfileScreen() {
   const theme = useCurrentTheme();
-  const [isEditing, setIsEditing] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [editData, setEditData] = useState({
+    first_name: 'John',
+    last_name: 'Trader',
+    bio: 'Professional forex trader with 5+ years experience',
+  });
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleEditProfile = () => {
-    setIsEditing(!isEditing);
+  // Mock user data for forex trading
+  const user = {
+    first_name: 'John',
+    last_name: 'Trader',
+    email: 'john.trader@forex.com',
+    user_type: 'Premium Trader',
+    account_type: 'Professional',
+    join_date: 'March 2023',
+    total_trades: 1247,
+    success_rate: '78.5%',
+    total_profit: '$45,678',
+  };
+
+  const openEditModal = () => {
+    setEditData({
+      first_name: user.first_name,
+      last_name: user.last_name,
+      bio: user.bio,
+    });
+    setEditModalVisible(true);
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      setEditModalVisible(false);
+      Alert.alert('Success', 'Profile updated successfully!');
+    } catch (e) {
+      Alert.alert('Error', 'Failed to update profile.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleLogout = () => {
-    // Implement logout logic
+    Alert.alert(
+      'Sign Out',
+      'Are you sure you want to sign out?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Sign Out', style: 'destructive', onPress: () => console.log('Logout') }
+      ]
+    );
   };
 
-  const renderHeader = () => (
-    <Animated.View entering={FadeInDown.delay(200).springify()} style={styles.header}>
-      <View style={styles.headerContent}>
-        <View style={styles.profileInfo}>
-          <Image source={{ uri: userProfile.avatar }} style={styles.avatar} />
-          <View style={styles.profileText}>
-            <Text style={[styles.userName, { color: theme.colors.text.primary }]}>
-              {userProfile.name}
-            </Text>
-            <Text style={[styles.userEmail, { color: theme.colors.text.secondary }]}>
-              {userProfile.email}
-            </Text>
-            <View style={styles.verificationBadge}>
-              <Ionicons name="checkmark-circle" size={16} color={theme.colors.success[500]} />
-              <Text style={[styles.verificationText, { color: theme.colors.success[500] }]}>
-                Verified
+  return (
+    <>
+      <ScrollView
+        style={{ flex: 1, backgroundColor: GRAY }}
+        contentContainerStyle={{ padding: 10, paddingBottom: 40 }}
+      >
+        {/* Header with Avatar */}
+        <View style={styles.headerContainer}>
+          <View style={styles.avatarWrapper}>
+            <View style={styles.avatar}>
+              <Text style={styles.avatarText}>
+                {getInitials(user.first_name, user.last_name)}
               </Text>
+            </View>
+          </View>
+          <Text style={styles.nameText}>
+            {user.first_name} {user.last_name}
+          </Text>
+          <View style={styles.userTypePill}>
+            <Ionicons name="star" size={16} color={ORANGE} style={{ marginRight: 4 }} />
+            <Text style={styles.userTypeText}>{user.user_type}</Text>
+          </View>
+          <Text style={styles.emailText}>{user.email}</Text>
+        </View>
+
+        {/* Trading Stats */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Trading Statistics</Text>
+          <View style={styles.statsGrid}>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{user.total_trades}</Text>
+              <Text style={styles.statLabel}>Total Trades</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{user.success_rate}</Text>
+              <Text style={styles.statLabel}>Success Rate</Text>
+            </View>
+            <View style={styles.statCard}>
+              <Text style={styles.statValue}>{user.total_profit}</Text>
+              <Text style={styles.statLabel}>Total Profit</Text>
             </View>
           </View>
         </View>
-        
-        <TouchableOpacity style={styles.editButton} onPress={handleEditProfile}>
-          <Ionicons name="create-outline" size={20} color={theme.colors.primary[500]} />
-        </TouchableOpacity>
-      </View>
-      
-      <Text style={[styles.userBio, { color: theme.colors.text.secondary }]}>
-        {userProfile.bio}
-      </Text>
-    </Animated.View>
-  );
 
-  const renderProfileStats = () => (
-    <Animated.View entering={FadeInUp.delay(400).springify()}>
-      <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>
-        Profile Statistics
-      </Text>
-      
-      <View style={styles.statsGrid}>
-        {profileStats.map((stat) => (
-          <PremiumCard
-            key={stat.id}
-            size="sm"
-            style={styles.statCard}
-            onPress={() => {}}
+        {/* Account Settings */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Account</Text>
+          <View style={styles.card}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={openEditModal}>
+              <Ionicons name="person" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Edit Profile</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+              <Ionicons name="notifications" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Notifications</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+              <Ionicons name="shield-checkmark" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Security</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7}>
+              <Ionicons name="card" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Payment Methods</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Trading Preferences */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Trading Preferences</Text>
+          <View style={styles.card}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+              <Ionicons name="trending-up" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Risk Management</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+              <Ionicons name="time" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Trading Hours</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7}>
+              <Ionicons name="settings" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Trading Settings</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Support & Help */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Support</Text>
+          <View style={styles.card}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+              <Ionicons name="help-circle" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Help & Support</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+              <Ionicons name="document-text" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Terms & Conditions</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7}>
+              <Ionicons name="information-circle" size={24} color={BLUE} />
+              <Text style={styles.cardText}>About App</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Logout Button */}
+        <View style={styles.section}>
+          <TouchableOpacity
+            onPress={handleLogout}
+            style={styles.logoutBtn}
+            activeOpacity={0.8}
           >
-            <View style={styles.statContent}>
-              <View style={[styles.statIcon, { backgroundColor: stat.color }]}>
-                <Ionicons name={stat.icon as any} size={20} color="white" />
-              </View>
-              <Text style={[styles.statValue, { color: theme.colors.text.primary }]}>
-                {stat.value}
-              </Text>
-              <Text style={[styles.statLabel, { color: theme.colors.text.secondary }]}>
-                {stat.label}
-              </Text>
-            </View>
-          </PremiumCard>
-        ))}
-      </View>
-    </Animated.View>
-  );
-
-  const renderProfileMenu = () => (
-    <Animated.View entering={FadeInUp.delay(500).springify()}>
-      <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>
-        Account Settings
-      </Text>
-      
-      {profileMenuItems.map((item) => (
-        <PremiumCard
-          key={item.id}
-          size="sm"
-          style={styles.menuCard}
-          onPress={item.onPress}
-        >
-          <View style={styles.menuItem}>
-            <View style={[styles.menuIcon, { backgroundColor: item.color }]}>
-              <Ionicons name={item.icon as any} size={20} color="white" />
-            </View>
-            <View style={styles.menuContent}>
-              <Text style={[styles.menuTitle, { color: theme.colors.text.primary }]}>
-                {item.title}
-              </Text>
-              <Text style={[styles.menuSubtitle, { color: theme.colors.text.secondary }]}>
-                {item.subtitle}
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={theme.colors.text.tertiary} />
-          </View>
-        </PremiumCard>
-      ))}
-    </Animated.View>
-  );
-
-  const renderRecentActivity = () => (
-    <Animated.View entering={FadeInUp.delay(600).springify()}>
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>
-          Recent Activity
-        </Text>
-        <TouchableOpacity>
-          <Text style={[styles.viewAllText, { color: theme.colors.primary[500] }]}>
-            View All
-          </Text>
-        </TouchableOpacity>
-      </View>
-      
-      {recentActivity.map((activity) => (
-        <PremiumCard
-          key={activity.id}
-          size="sm"
-          style={styles.activityCard}
-          onPress={() => {}}
-        >
-          <View style={styles.activityItem}>
-            <View style={[styles.activityIcon, { backgroundColor: activity.color }]}>
-              <Ionicons name={activity.icon as any} size={16} color="white" />
-            </View>
-            <View style={styles.activityContent}>
-              <Text style={[styles.activityTitle, { color: theme.colors.text.primary }]}>
-                {activity.title}
-              </Text>
-              <Text style={[styles.activitySubtitle, { color: theme.colors.text.secondary }]}>
-                {activity.subtitle}
-              </Text>
-            </View>
-            <Text style={[styles.activityTime, { color: theme.colors.text.tertiary }]}>
-              {activity.time}
-            </Text>
-          </View>
-        </PremiumCard>
-      ))}
-    </Animated.View>
-  );
-
-  const renderActionButtons = () => (
-    <Animated.View entering={FadeInUp.delay(700).springify()} style={styles.actionButtons}>
-      <PremiumButton
-        title="Logout"
-        onPress={handleLogout}
-        variant="outline"
-        size="lg"
-        style={styles.logoutButton}
-        leftIcon={<Ionicons name="log-out-outline" size={20} color={theme.colors.error[500]} />}
-      />
-    </Animated.View>
-  );
-
-  const renderDecorativeElements = () => (
-    <>
-      <Animated.View
-        entering={SlideInLeft.delay(800).springify()}
-        style={[styles.decorativeCircle, { backgroundColor: theme.colors.primary[500] }]}
-      />
-      <Animated.View
-        entering={SlideInLeft.delay(1000).springify()}
-        style={[styles.decorativeCircle, { backgroundColor: theme.colors.secondary[500] }]}
-      />
-    </>
-  );
-
-  return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
-      >
-        {renderHeader()}
-        {renderProfileStats()}
-        {renderProfileMenu()}
-        {renderRecentActivity()}
-        {renderActionButtons()}
-        {renderDecorativeElements()}
+            <Ionicons name="log-out" size={22} color="#fff" />
+            <Text style={styles.logoutText}>Sign Out</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
-    </View>
+
+      {/* Edit Profile Modal */}
+      <Modal
+        visible={editModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setEditModalVisible(false)}
+      >
+        <View style={modalStyles.overlay}>
+          <View style={modalStyles.modalContainer}>
+            <Text style={modalStyles.modalTitle}>Edit Profile</Text>
+            <TextInput
+              style={modalStyles.input}
+              placeholder="First Name"
+              value={editData.first_name}
+              onChangeText={text => setEditData({ ...editData, first_name: text })}
+              autoCapitalize="words"
+            />
+            <TextInput
+              style={modalStyles.input}
+              placeholder="Last Name"
+              value={editData.last_name}
+              onChangeText={text => setEditData({ ...editData, last_name: text })}
+              autoCapitalize="words"
+            />
+            <TextInput
+              style={[modalStyles.input, { height: 80 }]}
+              placeholder="Bio"
+              value={editData.bio}
+              onChangeText={text => setEditData({ ...editData, bio: text })}
+              multiline
+              numberOfLines={4}
+            />
+            <View style={modalStyles.buttonRow}>
+              <TouchableOpacity
+                style={[modalStyles.button, { backgroundColor: '#eee' }]}
+                onPress={() => setEditModalVisible(false)}
+                disabled={isSaving}
+              >
+                <Text style={[modalStyles.buttonText, { color: '#333' }]}>Cancel</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[modalStyles.button, { backgroundColor: ORANGE }]}
+                onPress={handleSave}
+                disabled={isSaving}
+              >
+                {isSaving ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={modalStyles.buttonText}>Save</Text>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 120, // Space for tab bar
-  },
-  header: {
-    paddingTop: 60,
-    paddingHorizontal: 20,
-    paddingBottom: 24,
-  },
-  headerContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-  },
-  profileInfo: {
-    flexDirection: 'row',
+  headerContainer: {
     alignItems: 'center',
-    flex: 1,
+    paddingTop: 36,
+    paddingBottom: 28,
+    backgroundColor: BG,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+    marginBottom: 18,
+    borderWidth: 1,
+    borderColor: BORDER,
+    borderTopWidth: 0,
+  },
+  avatarWrapper: {
+    borderRadius: 60,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: BORDER,
+    backgroundColor: '#fff',
+    padding: 6,
   },
   avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginRight: 16,
+    width: 96,
+    height: 96,
+    borderRadius: 48,
+    backgroundColor: ORANGE,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 4,
+    borderColor: '#fff',
   },
-  profileText: {
-    flex: 1,
-  },
-  userName: {
-    fontSize: 24,
+  avatarText: {
+    color: '#fff',
+    fontSize: 38,
     fontWeight: 'bold',
-    marginBottom: 4,
+    letterSpacing: 1,
   },
-  userEmail: {
-    fontSize: 16,
-    marginBottom: 8,
-    opacity: 0.8,
+  nameText: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: DARK,
+    marginBottom: 6,
+    letterSpacing: 0.2,
   },
-  verificationBadge: {
+  userTypePill: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff7f0',
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 4,
+    marginBottom: 6,
+    marginTop: 2,
+    alignSelf: 'center',
+    borderWidth: 1,
+    borderColor: BORDER,
   },
-  verificationText: {
-    fontSize: 14,
+  userTypeText: {
+    color: ORANGE,
     fontWeight: '600',
-    marginLeft: 4,
+    fontSize: 15,
+    textTransform: 'capitalize',
+    letterSpacing: 0.2,
   },
-  editButton: {
-    padding: 8,
+  emailText: {
+    color: LIGHT,
+    fontSize: 15,
+    marginTop: 2,
+    fontWeight: '500',
+    letterSpacing: 0.1,
   },
-  userBio: {
-    fontSize: 16,
-    lineHeight: 24,
-    opacity: 0.8,
+  section: {
+    marginHorizontal: 0,
+    marginBottom: 24,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
-    marginBottom: 16,
-    paddingHorizontal: 20,
+    fontSize: 18,
+    fontWeight: '700',
+    color: DARK,
+    marginBottom: 10,
+    letterSpacing: 0.1,
+    marginLeft: 4,
   },
   statsGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: 20,
-    marginBottom: 32,
     gap: 12,
   },
   statCard: {
-    width: (width - 64) / 2,
-  },
-  statContent: {
+    flex: 1,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
     alignItems: 'center',
-  },
-  statIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 8,
+    borderWidth: 1,
+    borderColor: BORDER,
   },
   statValue: {
-    fontSize: 18,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontWeight: '700',
+    color: ORANGE,
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    opacity: 0.7,
+    color: LIGHT,
+    fontWeight: '500',
     textAlign: 'center',
   },
-  menuCard: {
-    marginHorizontal: 20,
-    marginBottom: 12,
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: BORDER,
+    overflow: 'hidden',
   },
-  menuItem: {
+  cardRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    paddingVertical: 18,
+    paddingHorizontal: 18,
+    borderBottomWidth: 1,
+    borderColor: BORDER,
+    backgroundColor: '#fff',
   },
-  menuIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  menuContent: {
-    flex: 1,
-  },
-  menuTitle: {
+  cardText: {
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
+    color: DARK,
+    fontWeight: '500',
+    marginLeft: 16,
+    flex: 1,
+    letterSpacing: 0.1,
   },
-  menuSubtitle: {
-    fontSize: 14,
-    opacity: 0.7,
-  },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    marginBottom: 16,
-  },
-  viewAllText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  activityCard: {
-    marginHorizontal: 20,
-    marginBottom: 12,
-  },
-  activityItem: {
+  logoutBtn: {
+    backgroundColor: ORANGE,
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  activityIcon: {
-    width: 32,
-    height: 32,
+    justifyContent: 'center',
+    paddingVertical: 16,
     borderRadius: 16,
+    marginTop: 8,
+    marginBottom: 32,
+    borderWidth: 1,
+    borderColor: BORDER,
+  },
+  logoutText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 17,
+    marginLeft: 10,
+    letterSpacing: 0.2,
+  },
+});
+
+const modalStyles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.18)',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
   },
-  activityContent: {
-    flex: 1,
+  modalContainer: {
+    width: '90%',
+    backgroundColor: '#fff',
+    borderRadius: 18,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: BORDER,
   },
-  activityTitle: {
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: DARK,
+    marginBottom: 18,
+    textAlign: 'center',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: BORDER,
+    borderRadius: 10,
+    padding: 12,
     fontSize: 16,
-    fontWeight: '600',
-    marginBottom: 4,
+    marginBottom: 14,
+    backgroundColor: '#fafbfc',
+    color: DARK,
   },
-  activitySubtitle: {
-    fontSize: 14,
-    opacity: 0.7,
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginTop: 8,
   },
-  activityTime: {
-    fontSize: 12,
-    opacity: 0.6,
+  button: {
+    paddingVertical: 10,
+    paddingHorizontal: 22,
+    borderRadius: 8,
+    marginLeft: 10,
+    minWidth: 90,
+    alignItems: 'center',
   },
-  actionButtons: {
-    paddingHorizontal: 20,
-    marginTop: 24,
-    marginBottom: 32,
-  },
-  logoutButton: {
-    borderColor: '#EF4444',
-  },
-  decorativeCircle: {
-    position: 'absolute',
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    opacity: 0.1,
-    left: -60,
-    top: 500,
+  buttonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 16,
   },
 });

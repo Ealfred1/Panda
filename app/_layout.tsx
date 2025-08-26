@@ -43,7 +43,10 @@ export default function RootLayout() {
       }
     } else if (isAuthenticated && inAuthGroup) {
       // Redirect to main app if authenticated
-      router.replace('/(tabs)');
+      router.replace('/(tabs)/home');
+    } else if (isAuthenticated && inTabsGroup && segments.length === 1) {
+      // If in tabs but no specific tab, redirect to home
+      router.replace('/(tabs)/home');
     }
   }, [isAuthenticated, isInitialized, segments, showOnboarding, router, setInitialized]);
 
@@ -57,6 +60,7 @@ export default function RootLayout() {
         <Stack>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(app)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
         <StatusBar
