@@ -1,19 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { forwardRef, useState } from 'react';
 import {
-    Text,
-    TextInput,
-    TextInputProps,
-    TextStyle,
-    TouchableOpacity,
-    View,
-    ViewStyle,
+  Text,
+  TextInput,
+  TextInputProps,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
 } from 'react-native';
 import Animated, {
-    interpolate,
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring
+  interpolate,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring
 } from 'react-native-reanimated';
 import { useCurrentTheme } from '../store/themeStore';
 
@@ -100,7 +100,7 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
   const getContainerStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
       marginBottom: theme.spacing.md,
-      borderRadius: theme.borderRadius.lg,
+      borderRadius: theme.borderRadius.xl, // More rounded
       overflow: 'hidden',
       flexDirection: 'row',
       alignItems: 'center',
@@ -109,8 +109,8 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
 
     const sizeStyles = {
       sm: { minHeight: 44 },
-      md: { minHeight: 50 },
-      lg: { minHeight: 58 },
+      md: { minHeight: 48 }, // Shorter to match button height better
+      lg: { minHeight: 56 },
     };
 
     const variantStyles = {
@@ -118,21 +118,21 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
         backgroundColor: theme.colors.background.secondary,
         borderWidth: 2,
         borderColor: theme.colors.border.primary,
-        paddingHorizontal: theme.spacing.md,
-        paddingVertical: theme.spacing.sm,
+        paddingHorizontal: 12, // Reduced horizontal padding
+        paddingVertical: 12, // Reduced vertical padding to make shorter
       },
       outlined: {
         backgroundColor: 'transparent',
         borderWidth: 2,
         borderColor: theme.colors.border.primary,
-        paddingHorizontal: theme.spacing.md,
-        paddingVertical: theme.spacing.sm,
+        paddingHorizontal: 12, // Reduced horizontal padding
+        paddingVertical: 12, // Reduced vertical padding to make shorter
       },
       filled: {
         backgroundColor: theme.colors.background.secondary,
         borderWidth: 0,
-        paddingHorizontal: theme.spacing.md,
-        paddingVertical: theme.spacing.sm,
+        paddingHorizontal: 12, // Reduced horizontal padding
+        paddingVertical: 12, // Reduced vertical padding to make shorter
       },
     };
 
@@ -145,12 +145,12 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
         shadowColor: error ? theme.colors.error[500] : theme.colors.primary[500],
         shadowOffset: { width: 0, height: 0 },
         shadowOpacity: 0.2,
-        shadowRadius: 8,
-        elevation: 4,
+        shadowRadius: 12, // Increased shadow radius
+        elevation: 6, // Increased elevation
       }),
       ...(error && {
         borderColor: theme.colors.error[500],
-        backgroundColor: `${theme.colors.error[500]}10`,
+        // backgroundColor: `${theme.colors.error[500]}10`,
       }),
       ...(success && {
         borderColor: theme.colors.success[500],
@@ -197,7 +197,8 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
     return {
       color: theme.colors.error[500],
       fontSize: 12,
-      marginTop: theme.spacing.xs,
+      marginTop: 0, // Reduced margin to bring error closer to input
+      marginBottom: theme.spacing.sm, // Add bottom margin to separate from next field
       fontWeight: '500',
     };
   };
@@ -251,12 +252,13 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
     if (!leftIcon) return null;
     return (
       <View style={{ 
-        marginRight: theme.spacing.sm,
+        marginRight: theme.spacing.md, // Increased spacing
         opacity: isFocused ? 1 : 0.7,
-        width: 28,
-        height: 28,
+        width: 24,
+        height: 24,
         alignItems: 'center',
         justifyContent: 'center',
+        flexDirection: 'row', // Ensure inline layout
       }}>
         <Ionicons 
           name={leftIcon} 
@@ -273,12 +275,14 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
         <TouchableOpacity
           onPress={togglePasswordVisibility}
           style={{ 
-            marginLeft: theme.spacing.sm,
-            padding: theme.spacing.xs,
-            width: 28,
-            height: 28,
+            marginLeft: theme.spacing.md, // Increased spacing
+            padding: theme.spacing.sm,
+            width: 32,
+            height: 32,
             alignItems: 'center',
             justifyContent: 'center',
+            borderRadius: theme.borderRadius.md, // Rounded touch area
+            flexDirection: 'row', // Ensure inline layout
           }}
         >
           <Ionicons 
@@ -295,12 +299,14 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
         <TouchableOpacity
           onPress={onRightIconPress}
           style={{ 
-            marginLeft: theme.spacing.sm,
-            padding: theme.spacing.xs,
-            width: 28,
-            height: 28,
+            marginLeft: theme.spacing.md,
+            padding: theme.spacing.sm,
+            width: 32,
+            height: 32,
             alignItems: 'center',
             justifyContent: 'center',
+            borderRadius: theme.borderRadius.md,
+            flexDirection: 'row',
           }}
         >
           <Ionicons 
@@ -315,12 +321,13 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
     if (rightIcon) {
       return (
         <View style={{ 
-          marginLeft: theme.spacing.sm,
+          marginLeft: theme.spacing.md,
           opacity: 0.7,
-          width: 28,
-          height: 28,
+          width: 24,
+          height: 24,
           alignItems: 'center',
           justifyContent: 'center',
+          flexDirection: 'row',
         }}>
           <Ionicons 
             name={rightIcon} 
@@ -370,3 +377,5 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
     </View>
   );
 });
+
+EnhancedInput.displayName = 'EnhancedInput';

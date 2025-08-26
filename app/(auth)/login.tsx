@@ -4,19 +4,20 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Animated, {
-    FadeInDown,
-    FadeInUp,
-    SlideInRight,
+  FadeInDown,
+  FadeInUp,
+  SlideInRight,
 } from 'react-native-reanimated';
 import { EnhancedInput } from '../../src/components/EnhancedInput';
-import { PremiumButton } from '../../src/components/PremiumButton';
+
 import { useAppStore } from '../../src/store/appStore';
 import { useCurrentTheme } from '../../src/store/themeStore';
 import { LoginFormData, loginSchema } from '../../src/utils/validationSchemas';
@@ -130,18 +131,24 @@ export default function Login() {
           )}
         />
 
-        <PremiumButton
-          title="Sign In"
+        <TouchableOpacity
           onPress={handleSubmit(handleLogin)}
           disabled={!isValid || isLoading}
-          loading={isLoading}
-          size="lg"
-          style={styles.submitButton}
-          leftIcon={<Ionicons name="arrow-forward" size={20} color={theme.colors.text.inverse} />}
-        />
+          style={[styles.submitButton, (!isValid || isLoading) && { opacity: 0.5 }]}
+          activeOpacity={0.8}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <>
+              <Ionicons name="arrow-forward" size={20} color="#fff" />
+              <Text style={styles.submitButtonText}>Sign In</Text>
+            </>
+          )}
+        </TouchableOpacity>
 
         <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotButton}>
-          <Text style={[styles.forgotText, { color: theme.colors.primary[500] }]}>
+          <Text style={[styles.forgotText, { color: '#f58220' }]}>
             Forgot Password?
           </Text>
         </TouchableOpacity>
@@ -156,7 +163,7 @@ export default function Login() {
           Don&apos;t have an account?{' '}
         </Text>
         <TouchableOpacity onPress={handleSignUp}>
-          <Text style={[styles.footerLink, { color: theme.colors.primary[500] }]}>
+          <Text style={[styles.footerLink, { color: '#f58220' }]}>
             Sign Up
           </Text>
         </TouchableOpacity>
@@ -201,11 +208,11 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 8,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.1,
+    shadowRadius: 16,
+    elevation: 8,
   },
   logoText: {
     fontSize: 40,
@@ -227,8 +234,23 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   submitButton: {
+    backgroundColor: '#f58220',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 16,
     marginTop: 20,
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 17,
+    marginLeft: 10,
+    letterSpacing: 0.2,
   },
   forgotButton: {
     alignSelf: 'center',

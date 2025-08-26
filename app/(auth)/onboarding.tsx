@@ -1,14 +1,15 @@
 import { useRouter } from 'expo-router';
 import React, { useRef, useState } from 'react';
 import {
-    Dimensions,
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Dimensions,
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
+
 import { useAppStore } from '../../src/store/appStore';
 import { useCurrentTheme } from '../../src/store/themeStore';
 
@@ -126,10 +127,11 @@ export default function Onboarding() {
       
       <View style={styles.buttonContainer}>
         <TouchableOpacity
-          style={[styles.nextButton, { backgroundColor: theme.colors.primary[500] }]}
           onPress={handleNext}
+          style={styles.submitButton}
+          activeOpacity={0.8}
         >
-          <Text style={[styles.nextButtonText, { color: theme.colors.text.inverse }]}>
+          <Text style={styles.submitButtonText}>
             {currentIndex === onboardingSlides.length - 1 ? 'Get Started' : 'Next'}
           </Text>
         </TouchableOpacity>
@@ -147,7 +149,9 @@ const styles = StyleSheet.create({
     top: 60,
     right: 20,
     zIndex: 1,
-    padding: 8,
+    padding: 12,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   skipText: {
     fontSize: 16,
@@ -162,9 +166,17 @@ const styles = StyleSheet.create({
   imageContainer: {
     width: width * 0.8,
     height: height * 0.4,
-    borderRadius: 20,
+    borderRadius: 24,
     overflow: 'hidden',
     marginBottom: 40,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 16,
+    elevation: 8,
   },
   image: {
     width: '100%',
@@ -200,23 +212,29 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   paginationDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 6,
   },
   buttonContainer: {
     paddingHorizontal: 40,
     marginBottom: 60,
   },
-  nextButton: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 12,
+  submitButton: {
+    backgroundColor: '#f58220',
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
   },
-  nextButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 17,
+    letterSpacing: 0.2,
   },
 });

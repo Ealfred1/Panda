@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { useAppStore } from '../../src/store/appStore';
 import { useCurrentTheme } from '../../src/store/themeStore';
 
 const ORANGE = '#f58220';
@@ -17,7 +19,9 @@ function getInitials(first = '', last = '') {
 }
 
 export default function ProfileScreen() {
+  const router = useRouter();
   const theme = useCurrentTheme();
+  const { logout } = useAppStore();
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [editData, setEditData] = useState({
     first_name: 'John',
@@ -68,7 +72,14 @@ export default function ProfileScreen() {
       'Are you sure you want to sign out?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Sign Out', style: 'destructive', onPress: () => console.log('Logout') }
+        { 
+          text: 'Sign Out', 
+          style: 'destructive', 
+          onPress: () => {
+            logout();
+            router.replace('/(auth)/login');
+          }
+        }
       ]
     );
   };

@@ -2,28 +2,30 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import Animated, {
-    FadeInDown,
-    FadeInUp,
-    SlideInRight,
-    useSharedValue,
-    useAnimatedStyle,
-    withSpring,
-    withRepeat,
-    withSequence,
+  FadeInDown,
+  FadeInUp,
+  SlideInRight,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withSpring,
 } from 'react-native-reanimated';
+
+import { useAppStore } from '../../src/store/appStore';
 import { useCurrentTheme } from '../../src/store/themeStore';
-import { PremiumButton } from '../../src/components/PremiumButton';
 
 export default function Success() {
   const router = useRouter();
   const theme = useCurrentTheme();
+  const { setUser, setAuthenticated } = useAppStore();
   
   // Animated values for floating elements
   const floatAnim = useSharedValue(0);
@@ -60,8 +62,18 @@ export default function Success() {
   }));
 
   const handleGetStarted = () => {
+    // Create user data and set as authenticated
+    const newUser = {
+      id: Date.now().toString(),
+      name: 'New User',
+      email: 'user@example.com',
+      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+    };
+    
+    setUser(newUser);
+    setAuthenticated(true);
     // Navigate to main app
-    router.replace('/(tabs)');
+    router.replace('/(tabs)/home');
   };
 
   const handleBackToLogin = () => {
@@ -155,22 +167,23 @@ export default function Success() {
         </View>
 
         <View style={styles.actionButtons}>
-          <PremiumButton
-            title="Get Started"
+          <TouchableOpacity
             onPress={handleGetStarted}
-            size="lg"
             style={styles.getStartedButton}
-            leftIcon={<Ionicons name="rocket" size={20} color={theme.colors.text.inverse} />}
-          />
+            activeOpacity={0.8}
+          >
+            <Ionicons name="rocket" size={20} color="#fff" />
+            <Text style={styles.getStartedButtonText}>Get Started</Text>
+          </TouchableOpacity>
           
-          <PremiumButton
-            title="Back to Login"
+          <TouchableOpacity
             onPress={handleBackToLogin}
-            variant="outline"
-            size="lg"
             style={styles.backButton}
-            leftIcon={<Ionicons name="log-in" size={20} color={theme.colors.primary[500]} />}
-          />
+            activeOpacity={0.8}
+          >
+            <Ionicons name="log-in" size={20} color="#f58220" />
+            <Text style={styles.backButtonText}>Back to Login</Text>
+          </TouchableOpacity>
         </View>
       </Animated.View>
 
@@ -219,11 +232,11 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: 12,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
+    elevation: 12,
   },
   successTitle: {
     fontSize: 28,
@@ -257,19 +270,27 @@ const styles = StyleSheet.create({
   featureItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 16,
+    padding: 20,
     backgroundColor: 'rgba(59, 130, 246, 0.05)',
-    borderRadius: 16,
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: 'rgba(59, 130, 246, 0.1)',
   },
   featureIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   featureText: {
     flex: 1,
@@ -288,10 +309,40 @@ const styles = StyleSheet.create({
     marginTop: 'auto',
   },
   getStartedButton: {
+    backgroundColor: '#f58220',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 16,
     marginBottom: 0,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  getStartedButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 17,
+    marginLeft: 10,
+    letterSpacing: 0.2,
   },
   backButton: {
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 16,
     marginBottom: 0,
+    borderWidth: 1,
+    borderColor: '#f58220',
+  },
+  backButtonText: {
+    color: '#f58220',
+    fontWeight: '700',
+    fontSize: 17,
+    marginLeft: 10,
+    letterSpacing: 0.2,
   },
   decorativeCircle: {
     position: 'absolute',

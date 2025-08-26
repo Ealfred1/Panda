@@ -80,10 +80,10 @@ export default function HomeScreen() {
           
           <View style={styles.headerActions}>
             <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="notifications-outline" size={24} color={DARK} />
+              <Ionicons name="notifications-outline" size={20} color={DARK} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.actionButton}>
-              <Ionicons name="settings-outline" size={24} color={DARK} />
+              <Ionicons name="settings-outline" size={20} color={DARK} />
             </TouchableOpacity>
           </View>
         </View>
@@ -131,7 +131,7 @@ export default function HomeScreen() {
       
       <View style={styles.profitCard}>
         <View style={styles.profitInfo}>
-          <Text style={styles.profitLabel}>Today's Profit</Text>
+          <Text style={styles.profitLabel}>Today&apos;s Profit</Text>
           <Text style={[styles.profitValue, { color: accountData.profit.startsWith('+') ? '#10b981' : '#ef4444' }]}>
             {accountData.profit}
           </Text>
@@ -278,9 +278,9 @@ export default function HomeScreen() {
     >
       {renderHeader()}
       {renderAccountOverview()}
+      {renderQuickActions()}
       {renderMarketWatchlist()}
       {renderTradingSignals()}
-      {renderQuickActions()}
       
       <View style={styles.bottomSpacing} />
     </ScrollView>
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: BG,
     paddingHorizontal: 20,
-    paddingTop: 20,
+    paddingTop: 60,
     paddingBottom: 24,
     marginBottom: 20,
     borderBottomLeftRadius: 24,
@@ -308,25 +308,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingRight: 10,
   },
   profileInfo: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   avatar: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     backgroundColor: ORANGE,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 16,
-    borderWidth: 3,
+    borderWidth: 2,
     borderColor: 'white',
   },
   avatarText: {
     color: 'white',
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   profileText: {
@@ -344,17 +345,16 @@ const styles = StyleSheet.create({
   },
   headerActions: {
     flexDirection: 'row',
-    gap: 12,
+    gap: 8,
+    marginRight: 20,
+    paddingRight: 20,
   },
   actionButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: GRAY,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: BORDER,
   },
   sectionTitle: {
     fontSize: 20,

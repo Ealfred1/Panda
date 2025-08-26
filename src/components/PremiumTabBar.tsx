@@ -18,7 +18,6 @@ const TabIcon: React.FC<TabIconProps> = ({ focused, icon, title, badge }) => {
         flex: 1,
         minWidth: 112,
         minHeight: 64,
-        marginTop: 16,
         justifyContent: 'center',
         alignItems: 'center',
         borderRadius: 50,

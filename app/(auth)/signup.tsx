@@ -4,20 +4,23 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Animated, {
-    FadeInDown,
-    FadeInUp,
-    SlideInLeft,
+  FadeInDown,
+  FadeInUp,
+  SlideInLeft,
 } from 'react-native-reanimated';
 import { EnhancedInput } from '../../src/components/EnhancedInput';
 import { PasswordStrengthIndicator } from '../../src/components/PasswordStrengthIndicator';
-import { PremiumButton } from '../../src/components/PremiumButton';
+
 import { useAppStore } from '../../src/store/appStore';
 import { useCurrentTheme } from '../../src/store/themeStore';
 import { RegistrationFormData, registrationSchema } from '../../src/utils/validationSchemas';
@@ -53,9 +56,9 @@ export default function SignUp() {
         avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       };
       
-      setUser(newUser);
+      // Store user data temporarily without setting as authenticated
+      // This will be set when user clicks "Get Started" on success screen
       setIsLoading(false);
-      // Navigate to success screen instead of setting authenticated
       router.push('/(auth)/success');
     }, 2000);
   };
@@ -65,11 +68,16 @@ export default function SignUp() {
   };
 
   return (
-    <ScrollView 
+    <KeyboardAvoidingView 
       style={[styles.container, { backgroundColor: theme.colors.background.primary }]}
-      contentContainerStyle={styles.contentContainer}
-      showsVerticalScrollIndicator={false}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
     >
+      <ScrollView 
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
       {/* Header */}
       <Animated.View 
         entering={FadeInDown.delay(200).springify()}
@@ -224,15 +232,21 @@ export default function SignUp() {
           )}
         />
 
-        <PremiumButton
-          title="Create Account"
+        <TouchableOpacity
           onPress={handleSubmit(handleSignUp)}
           disabled={!isValid || isLoading}
-          loading={isLoading}
-          size="lg"
-          style={styles.submitButton}
-          leftIcon={<Ionicons name="person-add" size={20} color={theme.colors.text.inverse} />}
-        />
+          style={[styles.submitButton, (!isValid || isLoading) && { opacity: 0.5 }]}
+          activeOpacity={0.8}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <>
+              <Ionicons name="person-add" size={20} color="#fff" />
+              <Text style={styles.submitButtonText}>Create Account</Text>
+            </>
+          )}
+        </TouchableOpacity>
       </Animated.View>
 
       {/* Footer */}
@@ -244,7 +258,7 @@ export default function SignUp() {
           Already have an account?{' '}
         </Text>
         <TouchableOpacity onPress={handleSignIn}>
-          <Text style={[styles.footerLink, { color: theme.colors.primary[500] }]}>
+          <Text style={[styles.footerLink, { color: '#f58220' }]}>
             Sign In
           </Text>
         </TouchableOpacity>
@@ -259,7 +273,8 @@ export default function SignUp() {
         entering={SlideInLeft.delay(1000).springify()}
         style={[styles.decorativeCircle, { backgroundColor: theme.colors.primary[500] }]}
       />
-    </ScrollView>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -268,7 +283,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
-    paddingBottom: 40,
+    paddingBottom: 100, // Increased padding for keyboard
     minHeight: '100%',
   },
   header: {
@@ -296,11 +311,11 @@ const styles = StyleSheet.create({
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 8,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
   },
   logoText: {
     fontSize: 40,
@@ -329,7 +344,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   submitButton: {
+    backgroundColor: '#f58220',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 16,
     marginTop: 20,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 17,
+    marginLeft: 10,
+    letterSpacing: 0.2,
   },
   footer: {
     flexDirection: 'row',

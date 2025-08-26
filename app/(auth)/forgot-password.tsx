@@ -4,19 +4,20 @@ import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import Animated, {
-    FadeInDown,
-    FadeInUp,
-    SlideInRight,
+  FadeInDown,
+  FadeInUp,
+  SlideInRight,
 } from 'react-native-reanimated';
 import { EnhancedInput } from '../../src/components/EnhancedInput';
-import { PremiumButton } from '../../src/components/PremiumButton';
+
 import { useCurrentTheme } from '../../src/store/themeStore';
 import { ForgotPasswordFormData, forgotPasswordSchema } from '../../src/utils/validationSchemas';
 
@@ -102,22 +103,23 @@ export default function ForgotPassword() {
           </Text>
           
           <View style={styles.actionButtons}>
-            <PremiumButton
-              title="Resend Email"
+            <TouchableOpacity
               onPress={handleResendEmail}
-              variant="outline"
-              size="lg"
               style={styles.resendButton}
-              leftIcon={<Ionicons name="refresh" size={20} color={theme.colors.primary[500]} />}
-            />
+              activeOpacity={0.8}
+            >
+              <Ionicons name="refresh" size={20} color="#f58220" />
+              <Text style={styles.resendButtonText}>Resend Email</Text>
+            </TouchableOpacity>
             
-            <PremiumButton
-              title="Back to Login"
-            onPress={handleBackToLogin}
-              size="lg"
+            <TouchableOpacity
+              onPress={handleBackToLogin}
               style={styles.loginButton}
-              leftIcon={<Ionicons name="log-in" size={20} color={theme.colors.text.inverse} />}
-            />
+              activeOpacity={0.8}
+            >
+              <Ionicons name="log-in" size={20} color="#fff" />
+              <Text style={styles.loginButtonText}>Back to Login</Text>
+            </TouchableOpacity>
         </View>
         </Animated.View>
 
@@ -187,15 +189,21 @@ export default function ForgotPassword() {
           )}
         />
 
-        <PremiumButton
-          title="Send Reset Link"
+        <TouchableOpacity
           onPress={handleSubmit(handleSubmitEmail)}
           disabled={!isValid || isLoading}
-          loading={isLoading}
-          size="lg"
-          style={styles.submitButton}
-          leftIcon={<Ionicons name="paper-plane" size={20} color={theme.colors.text.inverse} />}
-        />
+          style={[styles.submitButton, (!isValid || isLoading) && { opacity: 0.5 }]}
+          activeOpacity={0.8}
+        >
+          {isLoading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <>
+              <Ionicons name="paper-plane" size={20} color="#fff" />
+              <Text style={styles.submitButtonText}>Send Reset Link</Text>
+            </>
+          )}
+        </TouchableOpacity>
       </Animated.View>
 
       {/* Footer */}
@@ -207,7 +215,7 @@ export default function ForgotPassword() {
           Remember your password?{' '}
         </Text>
         <TouchableOpacity onPress={handleBackToLogin}>
-          <Text style={[styles.footerLink, { color: theme.colors.primary[500] }]}>
+          <Text style={[styles.footerLink, { color: '#f58220' }]}>
             Sign In
           </Text>
         </TouchableOpacity>
@@ -256,14 +264,14 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
+    shadowColor: '#fff',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 8,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
   },
   title: {
     fontSize: 28,
@@ -282,7 +290,22 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   submitButton: {
+    backgroundColor: '#f58220',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 16,
     marginTop: 20,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  submitButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 17,
+    marginLeft: 10,
+    letterSpacing: 0.2,
   },
   footer: {
     flexDirection: 'row',
@@ -309,14 +332,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#000',
+    shadowColor: '#fff',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 8,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
   },
   successTitle: {
     fontSize: 24,
@@ -342,10 +365,40 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   resendButton: {
+    backgroundColor: 'transparent',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 16,
     marginBottom: 0,
+    borderWidth: 1,
+    borderColor: '#f58220',
+  },
+  resendButtonText: {
+    color: '#f58220',
+    fontWeight: '700',
+    fontSize: 17,
+    marginLeft: 10,
+    letterSpacing: 0.2,
   },
   loginButton: {
+    backgroundColor: '#f58220',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 16,
     marginBottom: 0,
+    borderWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  loginButtonText: {
+    color: '#fff',
+    fontWeight: '700',
+    fontSize: 17,
+    marginLeft: 10,
+    letterSpacing: 0.2,
   },
   decorativeCircle: {
     position: 'absolute',

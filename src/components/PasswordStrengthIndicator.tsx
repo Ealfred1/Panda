@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, {
-  interpolate,
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
 } from 'react-native-reanimated';
 import { useCurrentTheme } from '../store/themeStore';
 
@@ -92,7 +92,7 @@ export const PasswordStrengthIndicator: React.FC<PasswordStrengthIndicatorProps>
         </Text>
       </View>
       
-      <View style={[styles.progressBar, { backgroundColor: theme.colors.border.primary }]}>
+      <View style={[styles.progressBar, { backgroundColor: 'rgba(0, 0, 0, 0.1)' }]}>
         <View
           style={[
             styles.progressFill,
@@ -124,46 +124,52 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 8,
     marginBottom: 16,
+    padding: 16,
+    borderRadius: 16,
+    backgroundColor: 'rgba(59, 130, 246, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(59, 130, 246, 0.1)',
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 12,
   },
   label: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '600',
   },
   strength: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '700',
   },
   progressBar: {
-    height: 4,
-    borderRadius: 2,
+    height: 6,
+    borderRadius: 3,
     overflow: 'hidden',
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
   },
   progressFill: {
     height: '100%',
-    borderRadius: 2,
+    borderRadius: 3,
   },
   feedbackContainer: {
-    marginTop: 8,
+    marginTop: 12,
   },
   feedbackItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 6,
   },
   feedbackDot: {
-    width: 4,
-    height: 4,
-    borderRadius: 2,
-    marginRight: 8,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 10,
   },
   feedbackText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '500',
   },
 });

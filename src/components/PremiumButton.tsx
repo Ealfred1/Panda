@@ -1,18 +1,18 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import {
-    ActivityIndicator,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    TouchableOpacityProps,
-    View,
-    ViewStyle,
+  ActivityIndicator,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  TouchableOpacityProps,
+  View,
+  ViewStyle,
 } from 'react-native';
 import Animated, {
-    useAnimatedStyle,
-    useSharedValue,
-    withSpring,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
 } from 'react-native-reanimated';
 import { useCurrentTheme } from '../store/themeStore';
 
@@ -70,45 +70,45 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
 
   const getButtonStyle = (): ViewStyle => {
     const baseStyle: ViewStyle = {
-      borderRadius: theme.borderRadius.lg,
+      borderRadius: 16, // Match profile logout button
       alignItems: 'center',
       justifyContent: 'center',
       flexDirection: 'row',
       width: '100%',
       borderWidth: 1,
-      borderColor: 'transparent',
+      borderColor: '#f0f0f0', // Match profile border color
     };
 
     const sizeStyles = {
       sm: {
-        paddingVertical: theme.spacing.sm,
-        paddingHorizontal: theme.spacing.lg,
-        minHeight: 44,
+        paddingVertical: 12,
+        paddingHorizontal: 20,
+        minHeight: 48,
       },
       md: {
-        paddingVertical: theme.spacing.md,
-        paddingHorizontal: theme.spacing.lg,
+        paddingVertical: 16, // Match profile logout button
+        paddingHorizontal: 20,
         minHeight: 56,
       },
       lg: {
-        paddingVertical: theme.spacing.lg,
-        paddingHorizontal: theme.spacing.xl,
+        paddingVertical: 18,
+        paddingHorizontal: 24,
         minHeight: 64,
       },
     };
 
     const variantStyles = {
       primary: {
-        backgroundColor: theme.colors.primary[500],
-        borderColor: theme.colors.primary[500],
+        backgroundColor: '#f58220', // Match profile orange color
+        borderColor: '#f0f0f0',
       },
       secondary: {
-        backgroundColor: theme.colors.secondary[500],
-        borderColor: theme.colors.secondary[500],
+        backgroundColor: '#0a2472', // Match profile blue color
+        borderColor: '#f0f0f0',
       },
       outline: {
         backgroundColor: 'transparent',
-        borderColor: theme.colors.primary[500],
+        borderColor: '#f58220',
       },
       ghost: {
         backgroundColor: 'transparent',
@@ -128,15 +128,16 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
 
   const getTextStyle = () => {
     const baseStyle = {
-      fontSize: size === 'sm' ? 14 : size === 'md' ? 16 : 18,
-      fontWeight: '600',
+      fontSize: size === 'sm' ? 14 : size === 'md' ? 17 : 18, // Match profile font size
+      fontWeight: '700', // Match profile font weight
+      letterSpacing: 0.2, // Match profile letter spacing
     };
 
     const variantTextStyles = {
-      primary: { color: theme.colors.text.inverse },
-      secondary: { color: theme.colors.text.inverse },
-      outline: { color: theme.colors.primary[500] },
-      ghost: { color: theme.colors.primary[500] },
+      primary: { color: '#fff' }, // Match profile white text
+      secondary: { color: '#fff' },
+      outline: { color: '#f58220' }, // Match profile orange color
+      ghost: { color: '#f58220' },
     };
 
     return {
@@ -159,15 +160,23 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
     <>
       {leftIcon && !loading && (
         <Animated.View style={{ 
-          marginRight: theme.spacing.sm,
+          marginRight: 10, // Match profile spacing
           alignItems: 'center',
           justifyContent: 'center',
+          flexDirection: 'row',
+          width: 24,
+          height: 24,
         }}>
           {leftIcon}
         </Animated.View>
       )}
       
-      <View style={{ flex: 1, alignItems: 'center' }}>
+      <View style={{ 
+        flex: 1, 
+        alignItems: 'center',
+        flexDirection: 'row', // Ensure inline layout
+        justifyContent: 'center',
+      }}>
         {loading ? (
           <ActivityIndicator 
             size="small" 
@@ -180,9 +189,12 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
       
       {rightIcon && !loading && (
         <Animated.View style={{ 
-          marginLeft: theme.spacing.sm,
+          marginLeft: 10, // Match profile spacing
           alignItems: 'center',
           justifyContent: 'center',
+          flexDirection: 'row',
+          width: 24,
+          height: 24,
         }}>
           {rightIcon}
         </Animated.View>
@@ -204,8 +216,7 @@ export const PremiumButton: React.FC<PremiumButtonProps> = ({
           colors={getGradientColors()}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
-          style={StyleSheet.absoluteFill}
-          borderRadius={theme.borderRadius.xl}
+          style={[StyleSheet.absoluteFill, { borderRadius: 16 }]}
         />
         {renderContent()}
       </AnimatedTouchableOpacity>
