@@ -137,17 +137,17 @@ export default function ProfileScreen() {
               <Text style={styles.cardText}>Edit Profile</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/notifications')}>
               <Ionicons name="notifications" size={24} color={BLUE} />
               <Text style={styles.cardText}>Notifications</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
               <Ionicons name="shield-checkmark" size={24} color={BLUE} />
               <Text style={styles.cardText}>Security</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7}>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
               <Ionicons name="card" size={24} color={BLUE} />
               <Text style={styles.cardText}>Payment Methods</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
@@ -159,19 +159,36 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Trading Preferences</Text>
           <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/analytics')}>
               <Ionicons name="trending-up" size={24} color={BLUE} />
               <Text style={styles.cardText}>Risk Management</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
               <Ionicons name="time" size={24} color={BLUE} />
               <Text style={styles.cardText}>Trading Hours</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7}>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
               <Ionicons name="settings" size={24} color={BLUE} />
               <Text style={styles.cardText}>Trading Settings</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Subscription */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Subscription</Text>
+          <View style={styles.card}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
+              <Ionicons name="star" size={24} color={ORANGE} />
+              <Text style={styles.cardText}>Manage Subscription</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
+              <Ionicons name="card" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Billing History</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
           </View>
@@ -181,17 +198,17 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Support</Text>
           <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => Alert.alert('Help', 'Help & Support coming soon!')}>
               <Ionicons name="help-circle" size={24} color={BLUE} />
               <Text style={styles.cardText}>Help & Support</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => Alert.alert('Terms', 'Terms & Conditions coming soon!')}>
               <Ionicons name="document-text" size={24} color={BLUE} />
               <Text style={styles.cardText}>Terms & Conditions</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7}>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => Alert.alert('About', 'About App coming soon!')}>
               <Ionicons name="information-circle" size={24} color={BLUE} />
               <Text style={styles.cardText}>About App</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
