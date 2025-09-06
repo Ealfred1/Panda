@@ -41,6 +41,7 @@ export default function ProfileScreen() {
     total_trades: 1247,
     success_rate: '78.5%',
     total_profit: '$45,678',
+    bio: 'Professional forex trader with 5+ years experience',
   };
 
   const openEditModal = () => {
@@ -137,17 +138,17 @@ export default function ProfileScreen() {
               <Text style={styles.cardText}>Edit Profile</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/notifications')}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/notifications')}>
               <Ionicons name="notifications" size={24} color={BLUE} />
               <Text style={styles.cardText}>Notifications</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
               <Ionicons name="shield-checkmark" size={24} color={BLUE} />
               <Text style={styles.cardText}>Security</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
               <Ionicons name="card" size={24} color={BLUE} />
               <Text style={styles.cardText}>Payment Methods</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
@@ -159,17 +160,17 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Trading Preferences</Text>
           <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/analytics')}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/analytics')}>
               <Ionicons name="trending-up" size={24} color={BLUE} />
               <Text style={styles.cardText}>Risk Management</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
               <Ionicons name="time" size={24} color={BLUE} />
               <Text style={styles.cardText}>Trading Hours</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
               <Ionicons name="settings" size={24} color={BLUE} />
               <Text style={styles.cardText}>Trading Settings</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
@@ -181,14 +182,26 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Subscription</Text>
           <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/subscription')}>
               <Ionicons name="star" size={24} color={ORANGE} />
               <Text style={styles.cardText}>Manage Subscription</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(tabs)/settings')}>
+            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/subscription')}>
               <Ionicons name="card" size={24} color={BLUE} />
               <Text style={styles.cardText}>Billing History</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Learning & Resources */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Learning & Resources</Text>
+          <View style={styles.card}>
+            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/learning')}>
+              <Ionicons name="book" size={24} color={BLUE} />
+              <Text style={styles.cardText}>Learning Center</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
           </View>

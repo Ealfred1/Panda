@@ -18,7 +18,7 @@ const portfolioSummary = {
     { symbol: 'EUR/USD', amount: '€15,000', value: '$16,275.00', change: '+$675.00', isPositive: true },
     { symbol: 'GBP/USD', amount: '£8,000', value: '$10,117.60', change: '-$182.40', isPositive: false },
     { symbol: 'USD/JPY', amount: '$2,000', value: '$2,000.00', change: '+$0.00', isPositive: true },
-  ];
+];
 
 const recentTransactions = [
     { type: 'buy', symbol: 'EUR/USD', amount: '€5,000', price: '1.0850', time: '2 hours ago', status: 'completed' },
@@ -32,21 +32,21 @@ const recentTransactions = [
         <View style={styles.balanceSection}>
           <Text style={styles.balanceLabel}>Total Balance</Text>
           <Text style={styles.balanceValue}>{portfolioSummary.totalValue}</Text>
-          <View style={styles.changeRow}>
+            <View style={styles.changeRow}>
             <Ionicons 
               name={portfolioSummary.isPositive ? 'trending-up' : 'trending-down'} 
               size={16} 
               color={portfolioSummary.isPositive ? '#f58220' : '#ef4444'} 
             />
-            <Text style={[
+              <Text style={[
               styles.changeText,
               { color: portfolioSummary.isPositive ? '#f58220' : '#ef4444' }
             ]}>
               {portfolioSummary.totalChange} ({portfolioSummary.changePercentage})
-            </Text>
+          </Text>
+            </View>
           </View>
         </View>
-      </View>
     </Animated.View>
   );
 
@@ -76,7 +76,7 @@ const recentTransactions = [
               ]}>
                 {asset.change}
               </Text>
-            </View>
+              </View>
           </View>
         </View>
       </TouchableOpacity>
@@ -108,24 +108,24 @@ const recentTransactions = [
               {transaction.type === 'buy' ? `Buy ${transaction.symbol}` :
                transaction.type === 'sell' ? `Sell ${transaction.symbol}` :
                'Deposit'}
-            </Text>
+              </Text>
             <Text style={styles.transactionDetails}>
               {transaction.type !== 'deposit' ? `${transaction.amount} @ ${transaction.price}` : transaction.amount}
-            </Text>
+              </Text>
             <Text style={styles.transactionTime}>
               {transaction.time}
-            </Text>
-          </View>
-          
+              </Text>
+            </View>
+            
           <View style={[
             styles.statusBadge,
             { backgroundColor: transaction.status === 'completed' ? '#f58220' : '#f59e0b' }
           ]}>
             <Text style={styles.statusText}>
               {transaction.status}
-            </Text>
+              </Text>
+            </View>
           </View>
-        </View>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -174,10 +174,10 @@ const recentTransactions = [
           <TouchableOpacity>
             <Text style={styles.viewAllText}>View All</Text>
           </TouchableOpacity>
-        </View>
-        
+      </View>
+      
         <View style={styles.assetsList}>
-          {assets.map(renderAsset)}
+        {assets.map(renderAsset)}
         </View>
       </Animated.View>
 
@@ -188,12 +188,12 @@ const recentTransactions = [
           <TouchableOpacity>
             <Text style={styles.viewAllText}>View All</Text>
           </TouchableOpacity>
-        </View>
+              </View>
         
         <View style={styles.transactionsList}>
-          {recentTransactions.map(renderTransaction)}
+        {recentTransactions.map(renderTransaction)}
         </View>
-      </Animated.View>
+    </Animated.View>
 
       <View style={styles.bottomSpacing} />
       </ScrollView>

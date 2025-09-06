@@ -34,6 +34,17 @@ export interface BotPerformance {
     return: number;
     signals: number;
   }>;
+  winRate: number;
+  volume: number;
+  totalTrades: number;
+  winningTrades: number;
+  losingTrades: number;
+  topAssets: Array<{
+    symbol: string;
+    name: string;
+    return: number;
+    volume: number;
+  }>;
 }
 
 interface BotState {
@@ -176,7 +187,13 @@ export const useBotStore = create<BotState>((set, get) => ({
       { month: 'Dec 2023', return: 8.7, signals: 38 },
       { month: 'Nov 2023', return: 15.2, signals: 42 },
       { month: 'Oct 2023', return: 6.8, signals: 31 }
-    ]
+    ],
+    winRate: 0,
+    volume: 0,
+    totalTrades: 0,
+    winningTrades: 0,
+    losingTrades: 0,
+    topAssets: []
   },
   isLoading: false,
 
