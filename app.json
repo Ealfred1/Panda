@@ -37,6 +37,13 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "82c765c1-f928-45b8-8cad-ff80874196b7"
+      }
+    },
+    "owner": "kampos"
   }
 }

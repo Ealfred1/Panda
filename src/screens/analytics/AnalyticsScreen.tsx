@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInUp } from 'react-native-reanimated';
-import { LineChart } from 'react-native-chart-kit';
+import { LineChart } from 'react-native-gifted-charts';
 import { useCurrentTheme } from '../../store';
 import { useBotStore } from '../../store/botStore';
 
@@ -247,34 +247,25 @@ export const AnalyticsScreen: React.FC = () => {
 
   const renderChart = () => {
     const currentData = chartData[activeMetric][timeframe];
+    const giftedChartData = currentData.datasets[0].data.map((value, index) => ({
+      value,
+      label: currentData.labels[index],
+    }));
 
     return (
       <View style={styles.chartContainer}>
         <LineChart
-          data={currentData}
-          width={screenWidth - 40}
+          data={giftedChartData}
+          width={screenWidth - 90}
           height={220}
-          chartConfig={{
-            backgroundColor: theme.colors.background.primary,
-            backgroundGradientFrom: theme.colors.background.secondary,
-            backgroundGradientTo: theme.colors.background.secondary,
-            decimalPlaces: activeMetric === 'winRate' ? 0 : 2,
-            color: (opacity = 1) => getMetricColor(activeMetric),
-            labelColor: (opacity = 1) => theme.colors.text.secondary,
-            style: {
-              borderRadius: 16,
-            },
-            propsForDots: {
-              r: '6',
-              strokeWidth: '2',
-              stroke: getMetricColor(activeMetric),
-            },
-          }}
-          bezier
-          style={{
-            marginVertical: 8,
-            borderRadius: 16,
-          }}
+          color={getMetricColor(activeMetric)}
+          thickness={2}
+          dataPointsColor={getMetricColor(activeMetric)}
+          yAxisTextStyle={{ color: theme.colors.text.secondary }}
+          xAxisLabelTextStyle={{ color: theme.colors.text.secondary, top: 10 }}
+          rulesColor={theme.colors.border.primary}
+          initialSpacing={10}
+          endSpacing={10}
         />
       </View>
     );
