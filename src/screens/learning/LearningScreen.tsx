@@ -520,17 +520,74 @@ export const LearningScreen = () => {
         visible={isVideoModalVisible}
         onRequestClose={closeVideoModal}
       >
-        <View style={styles.modalContainer}>
-          <TouchableOpacity style={styles.closeButton} onPress={closeVideoModal}>
-            <Ionicons name="close" size={30} color={theme.colors.text.primary} />
-          </TouchableOpacity>
-          {selectedVideo && (
-            <WebView
-              style={styles.webview}
-              source={{ uri: getYoutubeEmbedUrl(selectedVideo.url) }}
-              allowsFullscreenVideo
-            />
-          )}
+        <View style={[styles.videoModalContainer, { backgroundColor: '#000' }]}>
+          {/* Video Header Controls */}
+          <View style={styles.videoHeader}>
+            <TouchableOpacity style={styles.videoCloseButton} onPress={closeVideoModal}>
+              <Ionicons name="chevron-down" size={28} color="white" />
+            </TouchableOpacity>
+            <View style={styles.videoHeaderInfo}>
+              {selectedVideo && (
+                <Text style={styles.videoHeaderTitle} numberOfLines={1}>
+                  {selectedVideo.title}
+                </Text>
+              )}
+            </View>
+            <TouchableOpacity style={styles.videoMoreButton}>
+              <Ionicons name="ellipsis-vertical" size={24} color="white" />
+            </TouchableOpacity>
+          </View>
+
+          {/* Video Player */}
+          <View style={styles.videoPlayerContainer}>
+            {selectedVideo && (
+              <WebView
+                style={styles.webview}
+                source={{ uri: getYoutubeEmbedUrl(selectedVideo.url) }}
+                allowsFullscreenVideo
+                allowsInlineMediaPlayback
+                mediaPlaybackRequiresUserAction={false}
+                javaScriptEnabled
+                domStorageEnabled
+              />
+            )}
+          </View>
+
+          {/* Video Bottom Controls */}
+          <View style={styles.videoBottomControls}>
+            <View style={styles.videoControlsRow}>
+              <TouchableOpacity style={styles.controlButton}>
+                <Ionicons name="thumbs-up-outline" size={24} color="white" />
+                <Text style={styles.controlButtonText}>Like</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.controlButton}>
+                <Ionicons name="thumbs-down-outline" size={24} color="white" />
+                <Text style={styles.controlButtonText}>Dislike</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.controlButton}>
+                <Ionicons name="share-outline" size={24} color="white" />
+                <Text style={styles.controlButtonText}>Share</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity style={styles.controlButton}>
+                <Ionicons name="bookmark-outline" size={24} color="white" />
+                <Text style={styles.controlButtonText}>Save</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity 
+                style={styles.controlButton}
+                onPress={() => {
+                  closeVideoModal();
+                  setIsDetailsModalVisible(true);
+                }}
+              >
+                <Ionicons name="information-circle-outline" size={24} color="white" />
+                <Text style={styles.controlButtonText}>Info</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </Modal>
 
@@ -541,58 +598,109 @@ export const LearningScreen = () => {
         visible={isDetailsModalVisible}
         onRequestClose={closeDetailsModal}
       >
-        <View style={styles.modalContainer}>
-          <TouchableOpacity style={styles.closeButton} onPress={closeDetailsModal}>
-            <Ionicons name="close" size={30} color={theme.colors.text.primary} />
-          </TouchableOpacity>
+        <View style={[styles.modalContainer, { backgroundColor: theme.colors.background.primary }]}>
+          {/* Header with close button */}
+          <View style={[styles.modalHeader, { backgroundColor: theme.colors.background.secondary }]}>
+            <TouchableOpacity style={styles.closeButton} onPress={closeDetailsModal}>
+              <Ionicons name="close" size={28} color={theme.colors.text.primary} />
+            </TouchableOpacity>
+            <Text style={[styles.modalHeaderTitle, { color: theme.colors.text.primary }]}>Video Details</Text>
+            <View style={{ width: 28 }} />
+          </View>
+          
           {selectedVideo && (
-            <ScrollView style={styles.detailsContainer}>
-              <Text style={[styles.detailsTitle, { color: theme.colors.text.primary }]}>
-                {selectedVideo.title}
-              </Text>
-              
-              <TouchableOpacity 
-                style={styles.videoPreviewContainer}
-                onPress={() => {
-                  closeDetailsModal();
-                  setIsVideoModalVisible(true);
-                }}
-              >
-                <View style={styles.thumbnailPlaceholder}>
-                  <Ionicons name="play-circle" size={60} color={theme.colors.primary[500]} />
+            <ScrollView style={styles.detailsContainer} showsVerticalScrollIndicator={false}>
+              {/* Video Preview with Enhanced Controls */}
+              <View style={[styles.videoPreviewContainer, { backgroundColor: theme.colors.background.tertiary }]}>
+                <TouchableOpacity 
+                  style={styles.videoThumbnail}
+                  onPress={() => {
+                    closeDetailsModal();
+                    setIsVideoModalVisible(true);
+                  }}
+                >
+                  <View style={styles.thumbnailPlaceholder}>
+                    <View style={[styles.playButtonLarge, { backgroundColor: theme.colors.primary[500] }]}>
+                      <Ionicons name="play" size={32} color="white" />
+                    </View>
+                  </View>
+                  <View style={[styles.durationBadge, { backgroundColor: 'rgba(0,0,0,0.8)' }]}>
+                    <Text style={styles.durationText}>{selectedVideo.duration}</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+
+              {/* Title and Basic Info */}
+              <View style={styles.videoInfoSection}>
+                <Text style={[styles.detailsTitle, { color: theme.colors.text.primary }]}>
+                  {selectedVideo.title}
+                </Text>
+                
+                <View style={styles.videoMetaRow}>
+                  <View style={styles.statItem}>
+                    <Ionicons name="eye-outline" size={16} color={theme.colors.text.secondary} />
+                    <Text style={[styles.statText, { color: theme.colors.text.secondary }]}>
+                      {selectedVideo.views} views
+                    </Text>
+                  </View>
+                  <View style={[styles.levelBadge, { backgroundColor: getLevelColor(selectedVideo.level) }]}>
+                    <Text style={styles.levelText}>{selectedVideo.level}</Text>
+                  </View>
                 </View>
-              </TouchableOpacity>
-              
-              <View style={styles.instructorContainer}>
-                <Image
-                  source={{ uri: selectedVideo.instructor.avatar }}
-                  style={styles.instructorAvatar}
-                />
-                <Text style={[styles.instructorName, { color: theme.colors.text.primary }]}>
-                  {selectedVideo.instructor.name}
+              </View>
+
+              {/* Instructor Section */}
+              <View style={[styles.instructorSection, { backgroundColor: theme.colors.background.secondary }]}>
+                <View style={styles.instructorInfo}>
+                  <Image
+                    source={{ uri: selectedVideo.instructor.avatar }}
+                    style={styles.instructorAvatar}
+                  />
+                  <View style={styles.instructorDetails}>
+                    <Text style={[styles.instructorName, { color: theme.colors.text.primary }]}>
+                      {selectedVideo.instructor.name}
+                    </Text>
+                    <Text style={[styles.instructorTitle, { color: theme.colors.text.secondary }]}>
+                      Trading Expert
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity style={[styles.followButton, { backgroundColor: theme.colors.primary[500] }]}>
+                  <Text style={styles.followButtonText}>Follow</Text>
+                </TouchableOpacity>
+              </View>
+
+              {/* Description Section */}
+              <View style={styles.descriptionSection}>
+                <Text style={[styles.sectionTitle, { color: theme.colors.text.primary }]}>Description</Text>
+                <Text style={[styles.detailsDescription, { color: theme.colors.text.secondary }]}>
+                  {selectedVideo.description}
                 </Text>
               </View>
-              
-              <View style={[styles.levelBadge, { backgroundColor: getLevelColor(selectedVideo.level) }]}>
-                <Text style={styles.levelText}>{selectedVideo.level}</Text>
-              </View>
-              
-              <Text style={[styles.detailsDescription, { color: theme.colors.text.secondary }]}>
-                {selectedVideo.description}
-              </Text>
-              
-              <View style={styles.videoStats}>
-                <View style={styles.statItem}>
-                  <Ionicons name="time-outline" size={16} color={theme.colors.text.secondary} />
-                  <Text style={[styles.statText, { color: theme.colors.text.secondary }]}>
-                    {selectedVideo.duration}
-                  </Text>
-                </View>
-                <View style={styles.statItem}>
-                  <Ionicons name="eye-outline" size={16} color={theme.colors.text.secondary} />
-                  <Text style={[styles.statText, { color: theme.colors.text.secondary }]}>
-                    {selectedVideo.views} views
-                  </Text>
+
+              {/* Action Buttons */}
+              <View style={styles.actionButtonsContainer}>
+                <TouchableOpacity 
+                  style={[styles.primaryActionButton, { backgroundColor: theme.colors.primary[500] }]}
+                  onPress={() => {
+                    closeDetailsModal();
+                    setIsVideoModalVisible(true);
+                  }}
+                >
+                  <Ionicons name="play" size={20} color="white" />
+                  <Text style={styles.primaryActionButtonText}>Watch Now</Text>
+                </TouchableOpacity>
+                
+                <View style={styles.secondaryActions}>
+                  <TouchableOpacity style={[styles.secondaryActionButton, { backgroundColor: theme.colors.background.tertiary }]}>
+                    <Ionicons name="bookmark-outline" size={20} color={theme.colors.text.primary} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.secondaryActionButton, { backgroundColor: theme.colors.background.tertiary }]}>
+                    <Ionicons name="share-outline" size={20} color={theme.colors.text.primary} />
+                  </TouchableOpacity>
+                  <TouchableOpacity style={[styles.secondaryActionButton, { backgroundColor: theme.colors.background.tertiary }]}>
+                    <Ionicons name="download-outline" size={20} color={theme.colors.text.primary} />
+                  </TouchableOpacity>
                 </View>
               </View>
             </ScrollView>
@@ -614,49 +722,206 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: 'white',
+  },
+  videoModalContainer: {
+    flex: 1,
+  },
+  videoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingTop: 50,
+    paddingBottom: 16,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  videoCloseButton: {
+    padding: 8,
+  },
+  videoHeaderInfo: {
+    flex: 1,
+    marginHorizontal: 16,
+  },
+  videoHeaderTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 600,
+    textAlign: 'center',
+  },
+  videoMoreButton: {
+    padding: 8,
+  },
+  videoPlayerContainer: {
+    flex: 1,
+  },
+  videoBottomControls: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    paddingHorizontal: 16,
+    paddingVertical: 20,
+    paddingBottom: 40,
+  },
+  videoControlsRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+  },
+  controlButton: {
+    alignItems: 'center',
+    padding: 8,
+    minWidth: 60,
+  },
+  controlButtonText: {
+    color: 'white',
+    fontSize: 12,
+    marginTop: 4,
+    fontWeight: 500,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: 50,
+    paddingBottom: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0,0,0,0.1)',
+  },
+  modalHeaderTitle: {
+    fontSize: 18,
+    fontWeight: 600,
   },
   closeButton: {
-    position: 'absolute',
-    top: 40,
-    right: 20,
-    zIndex: 10,
+    padding: 8,
   },
   webview: {
     flex: 1,
   },
   detailsContainer: {
     flex: 1,
-    padding: 20,
-    paddingTop: 60,
   },
   detailsTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 16,
+    fontSize: 22,
+    fontWeight: 700,
+    lineHeight: 28,
   },
   detailsDescription: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginVertical: 16,
+    fontSize: 15,
+    lineHeight: 22,
   },
   videoPreviewContainer: {
-    height: 200,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 12,
+    margin: 20,
+    marginBottom: 0,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  videoThumbnail: {
+    height: 220,
+    position: 'relative',
+  },
+  playButtonLarge: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 4,
+  },
+  videoInfoSection: {
+    padding: 20,
+    paddingBottom: 16,
+  },
+  videoMetaRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  instructorSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 12,
+  },
+  instructorInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  instructorDetails: {
+    marginLeft: 12,
+  },
+  instructorTitle: {
+    fontSize: 14,
+    marginTop: 2,
+  },
+  followButton: {
+    paddingHorizontal: 20,
+    paddingVertical: 8,
+    borderRadius: 20,
+  },
+  followButtonText: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  descriptionSection: {
+    paddingHorizontal: 20,
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 600,
+    marginBottom: 12,
+  },
+  actionButtonsContainer: {
+    paddingHorizontal: 20,
+    paddingBottom: 40,
+  },
+  primaryActionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    borderRadius: 12,
     marginBottom: 16,
+    gap: 8,
+  },
+  primaryActionButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 600,
+  },
+  secondaryActions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    gap: 16,
+  },
+  secondaryActionButton: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderRadius: 12,
   },
   instructorAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 8,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
   },
   instructorName: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: 600,
   },
   playButton: {
     width: 60,

@@ -70,7 +70,6 @@ export const SubscriptionScreen: React.FC = () => {
   if (!currentSubscription && plans.length === 0) {
     return (
       <EmptyState
-        icon="💳"
         title="No Subscription Plans"
         message="Subscription plans are currently unavailable. Please check back later."
         actionText="Refresh"
@@ -81,7 +80,7 @@ export const SubscriptionScreen: React.FC = () => {
 
   return (
     <ScrollView 
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+      style={[styles.container, { backgroundColor: theme.colors.background.primary }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
@@ -319,38 +318,29 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   header: {
-    paddingTop: 60,
+    paddingTop: 50,
     paddingHorizontal: 20,
-    paddingBottom: 30,
-    alignItems: 'center',
+    paddingBottom: 16,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 28,
+    fontWeight: 700,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    maxWidth: 300,
+    fontSize: 15,
+    lineHeight: 20,
   },
   currentPlanSection: {
     paddingHorizontal: 20,
     marginBottom: 30,
   },
   currentPlanCard: {
-    borderRadius: 20,
-    padding: 24,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.08)',
   },
   currentPlanHeader: {
     flexDirection: 'row',
@@ -370,23 +360,23 @@ const styles = StyleSheet.create({
   },
   currentPlanTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: 600,
   },
   currentPlanDetails: {
     marginBottom: 20,
   },
   planName: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: 20,
+    fontWeight: 600,
+    marginBottom: 6,
   },
   planPrice: {
     fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontWeight: 700,
   },
   planPeriod: {
     fontSize: 16,
+    marginLeft: 6,
   },
   planDates: {
     fontSize: 14,
@@ -409,24 +399,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
+    fontSize: 20,
+    fontWeight: 600,
+    marginBottom: 16,
   },
   planCard: {
-    borderRadius: 20,
-    padding: 24,
-    marginBottom: 20,
-    borderWidth: 2,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.08)',
   },
   popularBadge: {
     position: 'absolute',
@@ -479,26 +461,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   confirmationModal: {
-    borderRadius: 20,
-    padding: 24,
+    borderRadius: 16,
+    padding: 20,
     width: '100%',
     maxWidth: 400,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 10,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 10,
   },
   modalHeader: {
     marginBottom: 24,
   },
   modalTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 12,
+    fontSize: 20,
+    fontWeight: 600,
+    marginBottom: 8,
     textAlign: 'center',
   },
   modalMessage: {

@@ -16,6 +16,7 @@ export interface UserProfile {
     uploadedAt: string;
   }>;
   linkedAccounts: Array<{
+    id: string;
     type: 'bank' | 'card' | 'crypto_wallet';
     name: string;
     lastFour?: string;
@@ -138,6 +139,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
     ],
     linkedAccounts: [
       {
+        id: '1',
         type: 'bank',
         name: 'Chase Bank',
         lastFour: '1234',
@@ -145,6 +147,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         linkedAt: '2024-01-01T00:00:00Z'
       },
       {
+        id: '2',
         type: 'card',
         name: 'Visa Credit Card',
         lastFour: '5678',
@@ -152,6 +155,7 @@ export const useSettingsStore = create<SettingsState>((set, get) => ({
         linkedAt: '2024-01-01T00:00:00Z'
       },
       {
+        id: '3',
         type: 'crypto_wallet',
         name: 'MetaMask',
         isVerified: true,

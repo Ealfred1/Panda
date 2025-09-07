@@ -403,15 +403,11 @@ const styles = StyleSheet.create({
     width: 120,
     padding: 16,
     borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+              },
   assetHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -456,15 +452,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 16,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+              },
   newsImage: {
     width: '100%',
     height: 120,

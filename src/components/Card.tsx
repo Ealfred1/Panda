@@ -25,7 +25,6 @@ interface CardProps {
   padding?: 'none' | 'sm' | 'md' | 'lg';
   margin?: 'none' | 'sm' | 'md' | 'lg';
   borderRadius?: 'sm' | 'md' | 'lg' | 'xl';
-  shadow?: 'none' | 'soft' | 'medium' | 'large';
 }
 
 const AnimatedTouchable = Animated.createAnimatedComponent(TouchableOpacity);
@@ -42,7 +41,6 @@ export const Card: React.FC<CardProps> = ({
   padding = 'md',
   margin = 'none',
   borderRadius = 'lg',
-  shadow = 'soft',
 }) => {
   const theme = useCurrentTheme();
   const scale = useSharedValue(1);
@@ -51,14 +49,12 @@ export const Card: React.FC<CardProps> = ({
   const handlePressIn = () => {
     if (onPress && !disabled && !loading) {
       scale.value = withSpring(0.98, { damping: 15, stiffness: 300 });
-      pressed.value = withTiming(1, { duration: 100 });
     }
   };
 
   const handlePressOut = () => {
     if (onPress && !disabled && !loading) {
       scale.value = withSpring(1, { damping: 15, stiffness: 300 });
-      pressed.value = withTiming(0, { duration: 100 });
     }
   };
 
@@ -96,11 +92,9 @@ export const Card: React.FC<CardProps> = ({
     const variantStyles = {
       default: {
         backgroundColor: theme.colors.background.card,
-        ...(shadow !== 'none' && theme.shadows[shadow]),
       },
       elevated: {
         backgroundColor: theme.colors.background.card,
-        ...theme.shadows.large,
       },
       outlined: {
         backgroundColor: 'transparent',
@@ -112,7 +106,6 @@ export const Card: React.FC<CardProps> = ({
       },
       gradient: {
         backgroundColor: theme.colors.background.card,
-        ...theme.shadows.medium,
       },
     };
 
@@ -132,7 +125,7 @@ export const Card: React.FC<CardProps> = ({
     if (variant === 'glass') {
       return (
         <BlurView intensity={20} style={StyleSheet.absoluteFill}>
-          <View style={{ padding: theme.spacing[padding] }}>
+          <View style={{ padding: padding === 'none' ? 0 : theme.spacing[padding as keyof typeof theme.spacing] }}>
             {children}
           </View>
         </BlurView>

@@ -491,15 +491,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   signalHeader: {
     marginBottom: 16,
   },
@@ -654,15 +650,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   performanceLabel: {
     fontSize: 14,
     marginBottom: 8,
@@ -689,15 +681,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   tradeLabel: {
     fontSize: 14,
     fontWeight: '600',
@@ -724,15 +712,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   monthlyHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

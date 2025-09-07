@@ -16,7 +16,7 @@ import * as yup from 'yup';
 import { Input } from '../../components/Input';
 import { ThemedButton } from '../../components/ThemedButton';
 import { useAppStore } from '../../store/appStore';
-import { useTheme } from '../../theme';
+import { useCurrentTheme } from '../../store/themeStore';
 
 const signUpSchema = yup.object().shape({
   email: yup.string().email('Please enter a valid email').required('Email is required'),
@@ -41,7 +41,7 @@ interface SignUpScreenProps {
 }
 
 export const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
-  const theme = useTheme();
+  const theme = useCurrentTheme();
   const { setUser, setAuthenticated } = useAppStore();
   const [kycImage, setKycImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -123,7 +123,7 @@ export const SignUpScreen: React.FC<SignUpScreenProps> = ({ navigation }) => {
 
   return (
     <ScrollView 
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+      style={[styles.container, { backgroundColor: theme.colors.background.primary }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >

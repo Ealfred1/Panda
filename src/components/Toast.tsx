@@ -145,7 +145,6 @@ export const Toast: React.FC<ToastProps> = ({
     borderWidth: 1,
     borderColor: typeStyles.borderColor,
     backgroundColor: typeStyles.backgroundColor,
-    ...theme.shadows.large,
   };
 
   const contentStyle: ViewStyle = {
@@ -158,7 +157,7 @@ export const Toast: React.FC<ToastProps> = ({
   const localTextStyle: TextStyle = {
     flex: 1,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: 500,
     color: typeStyles.textColor,
     marginLeft: showIcon ? theme.spacing.sm : 0,
   };

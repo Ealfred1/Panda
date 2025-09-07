@@ -14,7 +14,7 @@ import * as yup from 'yup';
 import { Input } from '../../components/Input';
 import { ThemedButton } from '../../components/ThemedButton';
 import { useAppStore } from '../../store/appStore';
-import { useTheme } from '../../theme';
+import { useCurrentTheme } from '../../store/themeStore';
 
 const loginSchema = yup.object().shape({
   email: yup.string().email('Please enter a valid email').required('Email is required'),
@@ -33,7 +33,7 @@ interface LoginScreenProps {
 }
 
 export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
-  const theme = useTheme();
+  const theme = useCurrentTheme();
   const { setUser, setAuthenticated } = useAppStore();
   const [isLoading, setIsLoading] = useState(false);
   const [showTwoFactor, setShowTwoFactor] = useState(false);
@@ -94,7 +94,7 @@ export const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
 
   return (
     <ScrollView 
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+      style={[styles.container, { backgroundColor: theme.colors.background.primary }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
@@ -248,15 +248,11 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
+              },
   logoText: {
     fontSize: 40,
   },

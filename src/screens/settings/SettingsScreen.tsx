@@ -528,7 +528,7 @@ export const SettingsScreen: React.FC = () => {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
       <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
         <Text style={[styles.title, { color: theme.colors.text.primary }]}>
           Settings
@@ -539,36 +539,41 @@ export const SettingsScreen: React.FC = () => {
       </Animated.View>
 
       <View style={styles.tabBar}>
-        {[
-          { key: 'profile', label: 'Profile', icon: 'person' },
-          { key: 'security', label: 'Security', icon: 'shield' },
-          { key: 'preferences', label: 'Preferences', icon: 'settings' },
-          { key: 'support', label: 'Support', icon: 'help-circle' }
-        ].map((tab) => (
-          <TouchableOpacity
-            key={tab.key}
-            style={[
-              styles.tabButton,
-              activeTab === tab.key && { 
-                backgroundColor: theme.colors.primary[500],
-                borderColor: theme.colors.primary[500]
-              }
-            ]}
-            onPress={() => setActiveTab(tab.key as any)}
-          >
-            <Ionicons 
-              name={tab.icon as any} 
-              size={20} 
-              color={activeTab === tab.key ? 'white' : theme.colors.text.secondary} 
-            />
-            <Text style={[
-              styles.tabLabel,
-              { color: activeTab === tab.key ? 'white' : theme.colors.text.secondary }
-            ]}>
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabScrollContainer}
+        >
+          {[
+            { key: 'profile', label: 'Profile', icon: 'person-outline' },
+            { key: 'security', label: 'Security', icon: 'shield-outline' },
+            { key: 'preferences', label: 'Preferences', icon: 'settings-outline' },
+            { key: 'support', label: 'Support', icon: 'help-circle-outline' }
+          ].map((tab) => (
+            <TouchableOpacity
+              key={tab.key}
+              style={[
+                styles.tabButton,
+                activeTab === tab.key && { 
+                  backgroundColor: theme.colors.primary[500]
+                }
+              ]}
+              onPress={() => setActiveTab(tab.key as any)}
+            >
+              <Ionicons 
+                name={tab.icon as any} 
+                size={18} 
+                color={activeTab === tab.key ? 'white' : theme.colors.text.secondary} 
+              />
+              <Text style={[
+                styles.tabLabel,
+                { color: activeTab === tab.key ? 'white' : theme.colors.text.secondary }
+              ]}>
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       <ScrollView 
@@ -590,44 +595,41 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 60,
+    paddingTop: 50,
     paddingHorizontal: 20,
-    paddingBottom: 20,
-    alignItems: 'center',
+    paddingBottom: 16,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 28,
+    fontWeight: 700,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    maxWidth: 300,
+    fontSize: 15,
+    lineHeight: 20,
   },
   tabBar: {
-    flexDirection: 'row',
     paddingHorizontal: 20,
     marginBottom: 20,
+  },
+  tabScrollContainer: {
+    flexDirection: 'row',
     gap: 8,
   },
   tabButton: {
-    flex: 1,
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    gap: 8,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    minWidth: 80,
+    gap: 6,
   },
   tabLabel: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: 600,
+    textAlign: 'center',
   },
   content: {
     flex: 1,
@@ -647,15 +649,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 20,
     marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   profileHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -738,15 +736,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   accountInfo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -791,15 +785,11 @@ const styles = StyleSheet.create({
   securityCard: {
     borderRadius: 16,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   securityHeader: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -830,15 +820,11 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     padding: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   deviceInfo: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -882,15 +868,11 @@ const styles = StyleSheet.create({
   preferenceCard: {
     borderRadius: 16,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  },
+              },
   preferenceItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -931,15 +913,11 @@ const styles = StyleSheet.create({
   faqCard: {
     borderRadius: 16,
     marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-    overflow: 'hidden',
+                overflow: 'hidden',
   },
   faqHeader: {
     flexDirection: 'row',

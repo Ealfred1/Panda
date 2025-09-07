@@ -274,15 +274,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+              },
   searchInput: {
     flex: 1,
     marginLeft: 12,
@@ -316,15 +312,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 16,
     borderRadius: 16,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
+              },
   assetLeft: {
     flexDirection: 'row',
     alignItems: 'center',

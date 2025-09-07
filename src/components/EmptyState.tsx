@@ -19,6 +19,7 @@ import { ThemedButton } from './ThemedButton';
 interface EmptyStateProps {
   title: string;
   description?: string;
+  message?: string;
   icon?: React.ReactNode;
   actionText?: string;
   onAction?: () => void;
@@ -32,6 +33,7 @@ interface EmptyStateProps {
 export const EmptyState: React.FC<EmptyStateProps> = ({
   title,
   description,
+  message,
   icon,
   actionText,
   onAction,
@@ -229,9 +231,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
         {title}
       </Text>
 
-      {description && (
+      {(description || message) && (
         <Text style={[descriptionContainerStyle, descriptionStyle]}>
-          {description}
+          {description || message}
         </Text>
       )}
 
@@ -253,9 +255,9 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
 export const SearchEmptyState: React.FC<Omit<EmptyStateProps, 'variant'>> = (props) => (
   <EmptyState
     variant="search"
-    title="No results found"
     description="Try adjusting your search terms or filters to find what you're looking for."
     {...props}
+    title={props.title || "No results found"}
   />
 );
 
@@ -265,19 +267,19 @@ export const ErrorEmptyState: React.FC<Omit<EmptyStateProps, 'variant'> & { onRe
 }) => (
   <EmptyState
     variant="error"
-    title="Something went wrong"
     description="We encountered an error while loading your content. Please try again."
     actionText="Try Again"
     onAction={onRetry}
     {...props}
+    title={props.title || "Something went wrong"}
   />
 );
 
 export const SuccessEmptyState: React.FC<Omit<EmptyStateProps, 'variant'>> = (props) => (
   <EmptyState
     variant="success"
-    title="All caught up!"
     description="You've seen all the latest updates. Check back later for more content."
     {...props}
+    title={props.title || "All caught up!"}
   />
 );

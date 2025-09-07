@@ -1,4 +1,5 @@
 import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
@@ -10,13 +11,16 @@ import Animated, {
     withSpring,
     withTiming,
 } from 'react-native-reanimated';
+import { AuthStackParamList } from '../navigation/AuthNavigator';
 import { useTheme } from '../theme';
 
 const { width, height } = Dimensions.get('window');
 
+type SplashScreenNavigationProp = StackNavigationProp<AuthStackParamList, 'Splash'>;
+
 export const SplashScreen: React.FC = () => {
   const { colors } = useTheme();
-  const navigation = useNavigation();
+  const navigation = useNavigation<SplashScreenNavigationProp>();
   
   const logoScale = useSharedValue(0);
   const logoOpacity = useSharedValue(0);
@@ -103,14 +107,6 @@ const styles = StyleSheet.create({
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 8,
   },
   logoText: {
     fontSize: 60,

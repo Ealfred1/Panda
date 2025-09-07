@@ -268,9 +268,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 20,
     backgroundColor: '#fff',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#f0f0f0',
   },
   actionIcon: {
     width: 48,

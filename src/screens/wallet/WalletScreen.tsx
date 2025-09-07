@@ -79,16 +79,24 @@ export const WalletScreen: React.FC = () => {
 
   const renderOverview = () => (
     <Animated.View entering={FadeInUp.delay(200)} style={styles.overviewSection}>
-      <View style={[styles.balanceCard, { backgroundColor: theme.colors.background.secondary }]}>
-        <Text style={[styles.balanceLabel, { color: theme.colors.text.secondary }]}>
-          Total Balance
-        </Text>
+      <View style={[styles.balanceCard, { backgroundColor: theme.colors.background.card }]}>
+        <View style={styles.balanceHeader}>
+          <Text style={[styles.balanceLabel, { color: theme.colors.text.secondary }]}>
+            Total Portfolio Value
+          </Text>
+          <TouchableOpacity style={styles.balanceToggle}>
+            <Ionicons name="eye-outline" size={20} color={theme.colors.text.secondary} />
+          </TouchableOpacity>
+        </View>
         <Text style={[styles.balanceAmount, { color: theme.colors.text.primary }]}>
           ${totalBalance.toLocaleString()}
         </Text>
-        <Text style={[styles.balanceChange, { color: theme.colors.success[500] }]}>
-          +$1,245.50 (+8.8%) today
-        </Text>
+        <View style={styles.balanceChangeContainer}>
+          <Ionicons name="trending-up" size={16} color={theme.colors.success[500]} />
+          <Text style={[styles.balanceChange, { color: theme.colors.success[500] }]}>
+            +$1,245.50 (+8.8%) today
+          </Text>
+        </View>
       </View>
 
       <View style={styles.assetsSection}>
@@ -102,7 +110,7 @@ export const WalletScreen: React.FC = () => {
             style={[styles.assetCard, { backgroundColor: theme.colors.background.secondary }]}
           >
             <View style={styles.assetHeader}>
-              <View style={styles.assetIcon}>
+              <View style={[styles.assetIcon, { backgroundColor: theme.colors.primary[500] + '20' }]}>
                 <Text style={styles.assetIconText}>{asset.icon}</Text>
               </View>
               <View style={styles.assetInfo}>
@@ -136,19 +144,19 @@ export const WalletScreen: React.FC = () => {
 
       <View style={styles.actionButtons}>
         <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: theme.colors.primary[500] }]}
+          style={[styles.primaryActionButton, { backgroundColor: theme.colors.primary[500] }]}
           onPress={() => setActiveTab('deposit')}
         >
-          <Ionicons name="add-circle" size={24} color="white" />
-          <Text style={styles.actionButtonText}>Deposit</Text>
+          <Ionicons name="arrow-down" size={20} color="white" />
+          <Text style={styles.primaryActionButtonText}>Deposit Funds</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: theme.colors.background.tertiary }]}
+          style={[styles.secondaryActionButton, { backgroundColor: theme.colors.background.tertiary, borderColor: theme.colors.primary[500] }]}
           onPress={() => setActiveTab('withdraw')}
         >
-          <Ionicons name="remove-circle" size={24} color={theme.colors.text.primary} />
-          <Text style={[styles.actionButtonText, { color: theme.colors.text.primary }]}>Withdraw</Text>
+          <Ionicons name="arrow-up" size={20} color={theme.colors.primary[500]} />
+          <Text style={[styles.secondaryActionButtonText, { color: theme.colors.primary[500] }]}>Withdraw</Text>
         </TouchableOpacity>
       </View>
     </Animated.View>
@@ -253,9 +261,8 @@ export const WalletScreen: React.FC = () => {
       
       {transactions.length === 0 ? (
         <EmptyState
-          icon="📊"
           title="No Transactions"
-          message="You haven&apos;t made any transactions yet. Start by depositing funds."
+          message="You haven't made any transactions yet. Start by depositing funds."
           actionText="Make First Deposit"
           onAction={() => setActiveTab('deposit')}
         />
@@ -267,10 +274,10 @@ export const WalletScreen: React.FC = () => {
             style={[styles.transactionCard, { backgroundColor: theme.colors.background.secondary }]}
           >
             <View style={styles.transactionHeader}>
-              <View style={styles.transactionIcon}>
+              <View style={[styles.transactionIcon, { backgroundColor: getTransactionColor(transaction.type) + '20' }]}>
                 <Ionicons 
                   name={getTransactionIcon(transaction.type) as any} 
-                  size={24} 
+                  size={20} 
                   color={getTransactionColor(transaction.type)} 
                 />
               </View>
@@ -313,7 +320,7 @@ export const WalletScreen: React.FC = () => {
   );
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
       <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
         <Text style={[styles.title, { color: theme.colors.text.primary }]}>
           Wallet
@@ -324,36 +331,41 @@ export const WalletScreen: React.FC = () => {
       </Animated.View>
 
       <View style={styles.tabBar}>
-        {[
-          { key: 'overview', label: 'Overview', icon: 'pie-chart' },
-          { key: 'deposit', label: 'Deposit', icon: 'add-circle' },
-          { key: 'withdraw', label: 'Withdraw', icon: 'remove-circle' },
-          { key: 'history', label: 'History', icon: 'time' }
-        ].map((tab) => (
-          <TouchableOpacity
-            key={tab.key}
-            style={[
-              styles.tabButton,
-              activeTab === tab.key && { 
-                backgroundColor: theme.colors.primary[500],
-                borderColor: theme.colors.primary[500]
-              }
-            ]}
-            onPress={() => setActiveTab(tab.key as any)}
-          >
-            <Ionicons 
-              name={tab.icon as any} 
-              size={20} 
-              color={activeTab === tab.key ? 'white' : theme.colors.text.secondary} 
-            />
-            <Text style={[
-              styles.tabLabel,
-              { color: activeTab === tab.key ? 'white' : theme.colors.text.secondary }
-            ]}>
-              {tab.label}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.tabScrollContent}
+        >
+          {[
+            { key: 'overview', label: 'Overview', icon: 'pie-chart-outline' },
+            { key: 'deposit', label: 'Deposit', icon: 'arrow-down-circle-outline' },
+            { key: 'withdraw', label: 'Withdraw', icon: 'arrow-up-circle-outline' },
+            { key: 'history', label: 'History', icon: 'time-outline' }
+          ].map((tab) => (
+            <TouchableOpacity
+              key={tab.key}
+              style={[
+                styles.tabButton,
+                activeTab === tab.key && { 
+                  backgroundColor: theme.colors.primary[500]
+                }
+              ]}
+              onPress={() => setActiveTab(tab.key as any)}
+            >
+              <Ionicons 
+                name={tab.icon as any} 
+                size={18} 
+                color={activeTab === tab.key ? 'white' : theme.colors.text.secondary} 
+              />
+              <Text style={[
+                styles.tabLabel,
+                { color: activeTab === tab.key ? 'white' : theme.colors.text.secondary }
+              ]}>
+                {tab.label}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
 
       <ScrollView 
@@ -375,40 +387,35 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 60,
+    paddingTop: 50,
     paddingHorizontal: 20,
-    paddingBottom: 20,
-    alignItems: 'center',
+    paddingBottom: 16,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 28,
+    fontWeight: 700,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    maxWidth: 300,
+    fontSize: 15,
+    lineHeight: 20,
   },
   tabBar: {
-    flexDirection: 'row',
     paddingHorizontal: 20,
     marginBottom: 20,
-    gap: 8,
+  },
+  tabScrollContent: {
+    gap: 12,
   },
   tabButton: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 12,
+    paddingVertical: 10,
     paddingHorizontal: 16,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: 'transparent',
-    gap: 8,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.05)',
+    gap: 6,
+    minWidth: 100,
   },
   tabLabel: {
     fontSize: 14,
@@ -424,27 +431,34 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   balanceCard: {
-    borderRadius: 20,
-    padding: 24,
+    borderRadius: 16,
+    padding: 20,
     marginBottom: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.08)',
+  },
+  balanceHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    elevation: 4,
+    marginBottom: 12,
+  },
+  balanceToggle: {
+    padding: 4,
+  },
+  balanceChangeContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 8,
   },
   balanceLabel: {
     fontSize: 16,
     marginBottom: 8,
   },
   balanceAmount: {
-    fontSize: 36,
-    fontWeight: 'bold',
-    marginBottom: 8,
+    fontSize: 32,
+    fontWeight: 700,
   },
   balanceChange: {
     fontSize: 16,
@@ -459,17 +473,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   assetCard: {
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.08)',
   },
   assetHeader: {
     flexDirection: 'row',
@@ -477,13 +485,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   assetIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
   assetIconText: {
     fontSize: 24,
@@ -521,21 +528,35 @@ const styles = StyleSheet.create({
   },
   actionButtons: {
     flexDirection: 'row',
-    gap: 16,
+    gap: 12,
   },
-  actionButton: {
+  primaryActionButton: {
     flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 16,
-    borderRadius: 16,
+    paddingVertical: 14,
+    borderRadius: 12,
     gap: 8,
   },
-  actionButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+  primaryActionButtonText: {
+    fontSize: 15,
+    fontWeight: 600,
     color: 'white',
+  },
+  secondaryActionButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    borderRadius: 12,
+    borderWidth: 1,
+    gap: 8,
+  },
+  secondaryActionButtonText: {
+    fontSize: 15,
+    fontWeight: 600,
   },
   methodsSection: {
     paddingHorizontal: 20,
@@ -546,26 +567,27 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   methodCard: {
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.08)',
   },
   methodHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 12,
   },
+  methodIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
   methodIcon: {
-    fontSize: 32,
-    marginRight: 16,
+    fontSize: 20,
   },
   methodInfo: {
     flex: 1,
@@ -609,17 +631,11 @@ const styles = StyleSheet.create({
     padding: 8,
   },
   transactionCard: {
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.08)',
   },
   transactionHeader: {
     flexDirection: 'row',
@@ -627,13 +643,12 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   transactionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 12,
   },
   transactionInfo: {
     flex: 1,

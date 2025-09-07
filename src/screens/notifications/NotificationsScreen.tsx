@@ -128,16 +128,15 @@ export const NotificationsScreen: React.FC = () => {
         { 
           backgroundColor: notification.isRead 
             ? theme.colors.background.secondary 
-            : theme.colors.background.tertiary,
-          borderLeftColor: getTypeColor(notification.type)
+            : theme.colors.background.card
         }
       ]}
     >
       <View style={styles.notificationHeader}>
-        <View style={styles.notificationIcon}>
+        <View style={[styles.notificationIcon, { backgroundColor: getTypeColor(notification.type) + '20' }]}>
           <Ionicons 
             name={getTypeIcon(notification.type) as any} 
-            size={20} 
+            size={18} 
             color={getTypeColor(notification.type)} 
           />
         </View>
@@ -240,11 +239,17 @@ export const NotificationsScreen: React.FC = () => {
         style={styles.notificationGroup}
       >
         <TouchableOpacity
-          style={styles.groupHeader}
+          style={[styles.groupHeader, { backgroundColor: theme.colors.background.secondary }]}
           onPress={() => toggleGroupExpansion(group.type)}
         >
           <View style={styles.groupInfo}>
-            <Text style={styles.groupIcon}>{group.icon}</Text>
+            <View style={[styles.groupIconContainer, { backgroundColor: getTypeColor(group.type) + '20' }]}>
+              <Ionicons 
+                name={getTypeIcon(group.type) as any} 
+                size={20} 
+                color={getTypeColor(group.type)} 
+              />
+            </View>
             <View>
               <Text style={[styles.groupTitle, { color: theme.colors.text.primary }]}>
                 {group.title}
@@ -283,9 +288,8 @@ export const NotificationsScreen: React.FC = () => {
   if (notifications.length === 0) {
     return (
       <EmptyState
-        icon="🔔"
         title="No Notifications"
-        message="You&apos;re all caught up! No notifications to display."
+        message="You're all caught up! No notifications to display."
         actionText="Refresh"
         onAction={() => {}}
       />
@@ -293,7 +297,7 @@ export const NotificationsScreen: React.FC = () => {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background.primary }]}>
       <Animated.View entering={FadeInDown.delay(100)} style={styles.header}>
         <Text style={[styles.title, { color: theme.colors.text.primary }]}>
           Notifications
@@ -357,7 +361,6 @@ export const NotificationsScreen: React.FC = () => {
       >
         {filteredNotifications.length === 0 ? (
           <EmptyState
-            icon="✅"
             title="All Caught Up!"
             message="No unread notifications to display."
             actionText="View All"
@@ -378,22 +381,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 60,
+    paddingTop: 50,
     paddingHorizontal: 20,
-    paddingBottom: 20,
-    alignItems: 'center',
+    paddingBottom: 16,
   },
   title: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    marginBottom: 8,
-    textAlign: 'center',
+    fontSize: 28,
+    fontWeight: 700,
+    marginBottom: 4,
   },
   subtitle: {
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    maxWidth: 300,
+    fontSize: 15,
+    lineHeight: 20,
     marginBottom: 16,
   },
   unreadBadge: {
@@ -450,15 +449,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.02)',
+    marginHorizontal: 20,
+    marginBottom: 8,
+    borderRadius: 12,
   },
   groupInfo: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
   },
-  groupIcon: {
-    fontSize: 24,
+  groupIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   groupTitle: {
     fontSize: 18,
@@ -476,30 +481,23 @@ const styles = StyleSheet.create({
   },
   groupContent: {
     paddingHorizontal: 20,
+    paddingTop: 8,
   },
   notificationItem: {
-    marginBottom: 12,
-    borderRadius: 16,
+    marginBottom: 8,
+    borderRadius: 12,
     padding: 16,
-    borderLeftWidth: 4,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.08)',
   },
   notificationHeader: {
     flexDirection: 'row',
     gap: 16,
   },
   notificationIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
   },

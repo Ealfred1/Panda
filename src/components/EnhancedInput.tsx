@@ -142,11 +142,6 @@ export const EnhancedInput = forwardRef<TextInput, EnhancedInputProps>(({
       ...variantStyles[variant],
       ...(isFocused && {
         borderColor: error ? theme.colors.error[500] : theme.colors.primary[500],
-        shadowColor: error ? theme.colors.error[500] : theme.colors.primary[500],
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.2,
-        shadowRadius: 12, // Increased shadow radius
-        elevation: 6, // Increased elevation
       }),
       ...(error && {
         borderColor: theme.colors.error[500],

@@ -66,6 +66,7 @@ const TabIcon: React.FC<TabIconProps> = ({ focused, icon, title, badge }) => {
     <View style={{
       width: '100%',
       height: '100%',
+      minHeight: 64,
       justifyContent: 'center',
       alignItems: 'center',
       marginTop: 16,
@@ -124,11 +125,6 @@ export const PremiumTabBar: React.FC<PremiumTabBarProps> = ({
       overflow: 'hidden',
       borderWidth: 1,
       borderColor: '#f0f0f0',
-      shadowColor: '#ddd',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.0,
-      shadowRadius: 4,
-      elevation: 4,
     }}>
       <View style={{
         flexDirection: 'row',

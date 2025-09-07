@@ -91,11 +91,6 @@ module.exports = {
         '4xl': '2rem',
         '5xl': '2.5rem',
       },
-      boxShadow: {
-        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.01), 0 10px 20px -2px rgba(0, 0, 0, 0.01)',
-        'glow': '0 0 20px rgba(59, 130, 246, 0.1)',
-        'glow-lg': '0 0 40px rgba(59, 130, 246, 0.1)',
-      },
     },
   },
   plugins: [],

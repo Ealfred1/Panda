@@ -24,7 +24,7 @@
   }
   
   .card {
-    @apply bg-white rounded-xl shadow-soft p-6 border border-gray-100;
+    @apply bg-white rounded-xl p-6 border border-gray-100;
   }
   
   .input-field {

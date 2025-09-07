@@ -91,7 +91,6 @@ export const CustomTabBar: React.FC<CustomTabBarProps> = ({
     backgroundColor: 'transparent',
     borderRadius: theme.borderRadius['2xl'],
     overflow: 'hidden',
-    ...theme.shadows.large,
   };
 
   const renderTabItem = (item: TabItem, index: number) => {
@@ -218,7 +217,6 @@ export const FloatingActionButton: React.FC<{
           backgroundColor: theme.colors.primary[500],
           alignItems: 'center',
           justifyContent: 'center',
-          ...theme.shadows.glow,
         },
         animatedStyle,
         style,

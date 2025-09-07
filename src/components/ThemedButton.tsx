@@ -51,12 +51,10 @@ export const ThemedButton: React.FC<ThemedButtonProps> = ({
 
   const handlePressIn = () => {
     scale.value = withSpring(0.95, { damping: 15, stiffness: 300 });
-    pressed.value = withTiming(1, { duration: 100 });
   };
 
   const handlePressOut = () => {
     scale.value = withSpring(1, { damping: 15, stiffness: 300 });
-    pressed.value = withTiming(0, { duration: 100 });
   };
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -93,11 +91,9 @@ export const ThemedButton: React.FC<ThemedButtonProps> = ({
     const variantStyles = {
       primary: {
         backgroundColor: theme.colors.primary[500],
-        ...theme.shadows.medium,
       },
       secondary: {
         backgroundColor: theme.colors.secondary[900],
-        ...theme.shadows.medium,
       },
       outline: {
         backgroundColor: 'transparent',
@@ -125,7 +121,7 @@ export const ThemedButton: React.FC<ThemedButtonProps> = ({
 
   const getTextStyle = (): TextStyle => {
     const baseStyle: TextStyle = {
-      fontWeight: '600',
+      fontWeight: 600,
       textAlign: 'center',
     };
 

@@ -12,7 +12,7 @@ import {
 import * as yup from 'yup';
 import { Input } from '../../components/Input';
 import { ThemedButton } from '../../components/ThemedButton';
-import { useTheme } from '../../theme';
+import { useCurrentTheme } from '../../store/themeStore';
 
 const forgotPasswordSchema = yup.object().shape({
   email: yup.string().email('Please enter a valid email').required('Email is required'),
@@ -27,7 +27,7 @@ interface ForgotPasswordScreenProps {
 }
 
 export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navigation }) => {
-  const theme = useTheme();
+  const theme = useCurrentTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [isEmailSent, setIsEmailSent] = useState(false);
 
@@ -64,7 +64,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
   if (isEmailSent) {
     return (
       <ScrollView 
-        style={[styles.container, { backgroundColor: theme.colors.background }]}
+        style={[styles.container, { backgroundColor: theme.colors.background.primary }]}
         contentContainerStyle={styles.contentContainer}
         showsVerticalScrollIndicator={false}
       >
@@ -117,7 +117,7 @@ export const ForgotPasswordScreen: React.FC<ForgotPasswordScreenProps> = ({ navi
 
   return (
     <ScrollView 
-      style={[styles.container, { backgroundColor: theme.colors.background }]}
+      style={[styles.container, { backgroundColor: theme.colors.background.primary }]}
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={false}
     >
@@ -211,15 +211,11 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
+              },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -262,15 +258,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
-    shadowColor: '#000',
-    shadowOffset: {
+        shadowOffset: {
       width: 0,
       height: 4,
     },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
+              },
   successTitle: {
     fontSize: 24,
     fontWeight: 'bold',
