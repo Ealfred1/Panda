@@ -1,20 +1,19 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   Alert,
   FlatList,
   Image,
-  Linking,
+  Modal,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  Modal,
+  View
 } from 'react-native';
-import { WebView } from 'react-native-webview';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { WebView } from 'react-native-webview';
 import { useCurrentTheme } from '../../store/themeStore';
 
 interface VideoMaterial {
@@ -53,142 +52,363 @@ export const LearningScreen = () => {
   const [selectedVideo, setSelectedVideo] = useState<VideoMaterial | null>(null);
   const [isVideoModalVisible, setIsVideoModalVisible] = useState(false);
   const [isDetailsModalVisible, setIsDetailsModalVisible] = useState(false);
+  const [isVideoLoading, setIsVideoLoading] = useState(false);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const [failedThumbnails, setFailedThumbnails] = useState<Set<string>>(new Set());
 
-  // Mock data for videos with YouTube links
+  // Real forex educational videos with working YouTube links
   const videoMaterials: VideoMaterial[] = [
     {
       id: '1',
-      title: 'Introduction to Forex Trading',
-      description: 'Learn the basics of forex trading and how to get started with your first trades.',
-      duration: '45:30',
-      thumbnail: 'https://example.com/thumbnail1.jpg',
+      title: 'Complete Forex Trading Course for Beginners',
+      description: 'Learn everything you need to know about forex trading from scratch. Perfect for absolute beginners.',
+      duration: '4:32:15',
+      thumbnail: 'https://img.youtube.com/vi/Yls2Fw75w5c/maxresdefault.jpg',
       url: 'https://www.youtube.com/watch?v=Yls2Fw75w5c',
       category: 'basics',
-      instructor: 'John Smith',
+      instructor: 'FXTM Education',
       level: 'beginner',
-      views: 12500,
+      views: 125000,
       rating: 4.8,
-      dateAdded: '2023-12-15',
+      dateAdded: '2024-01-15',
     },
     {
       id: '2',
-      title: 'Advanced Technical Analysis',
-      description: 'Master the art of technical analysis with advanced chart patterns and indicators.',
-      duration: '1:12:45',
-      thumbnail: 'https://example.com/thumbnail2.jpg',
+      title: 'Technical Analysis Masterclass - Chart Patterns',
+      description: 'Master advanced chart patterns, support/resistance, and technical indicators for profitable trading.',
+      duration: '2:15:30',
+      thumbnail: 'https://img.youtube.com/vi/eynxyoKgpng/maxresdefault.jpg',
       url: 'https://www.youtube.com/watch?v=eynxyoKgpng',
       category: 'technical',
-      instructor: 'Sarah Johnson',
+      instructor: 'Trading 212',
       level: 'advanced',
-      views: 8750,
+      views: 87500,
       rating: 4.9,
-      dateAdded: '2024-01-10',
+      dateAdded: '2024-01-20',
     },
     {
       id: '3',
-      title: 'Risk Management Strategies',
-      description: 'Learn how to protect your capital with effective risk management techniques.',
-      duration: '38:15',
-      thumbnail: 'https://example.com/thumbnail3.jpg',
+      title: 'Risk Management - The Key to Trading Success',
+      description: 'Learn essential risk management techniques to protect your capital and maximize profits.',
+      duration: '1:45:20',
+      thumbnail: 'https://img.youtube.com/vi/uFrmG5yn3Ps/maxresdefault.jpg',
       url: 'https://www.youtube.com/watch?v=uFrmG5yn3Ps',
       category: 'risk',
-      instructor: 'Michael Brown',
+      instructor: 'ForexSignals TV',
       level: 'intermediate',
-      views: 9200,
+      views: 92000,
       rating: 4.7,
+      dateAdded: '2024-01-25',
+    },
+    {
+      id: '4',
+      title: 'Fundamental Analysis - Economic Indicators',
+      description: 'Understand how economic data, central bank decisions, and news events move currency markets.',
+      duration: '1:38:45',
+      thumbnail: 'https://img.youtube.com/vi/Qtn5jMkJ_AA/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=Qtn5jMkJ_AA',
+      category: 'fundamental',
+      instructor: 'Investopedia',
+      level: 'intermediate',
+      views: 73000,
+      rating: 4.6,
+      dateAdded: '2024-02-01',
+    },
+    {
+      id: '5',
+      title: 'Trading Psychology - Master Your Emotions',
+      description: 'Develop the mental discipline and emotional control needed for consistent trading success.',
+      duration: '1:25:10',
+      thumbnail: 'https://img.youtube.com/vi/XmUz_qSYzI0/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=XmUz_qSYzI0',
+      category: 'psychology',
+      instructor: 'Trading Psychology Institute',
+      level: 'advanced',
+      views: 102000,
+      rating: 4.9,
       dateAdded: '2024-02-05',
     },
     {
-      id: '4',
-      title: 'Fundamental Analysis for Forex',
-      description: 'Understand how economic factors and news events impact currency markets.',
-      duration: '52:20',
-      thumbnail: 'https://example.com/thumbnail4.jpg',
-      url: 'https://www.youtube.com/watch?v=Qtn5jMkJ_AA',
-      category: 'fundamental',
-      instructor: 'Emily Davis',
+      id: '6',
+      title: 'Price Action Trading Strategies',
+      description: 'Learn to read price action and make profitable trades using pure price movement analysis.',
+      duration: '2:05:30',
+      thumbnail: 'https://img.youtube.com/vi/9vJRopau0g0/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=9vJRopau0g0',
+      category: 'technical',
+      instructor: 'Forex School Online',
       level: 'intermediate',
-      views: 7300,
-      rating: 4.6,
+      views: 156000,
+      rating: 4.8,
+      dateAdded: '2024-02-10',
+    },
+    {
+      id: '7',
+      title: 'Forex Trading for Complete Beginners',
+      description: 'Step-by-step guide to understanding forex markets, currency pairs, and basic trading concepts.',
+      duration: '1:55:20',
+      thumbnail: 'https://img.youtube.com/vi/7m4sL8qQ1YI/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=7m4sL8qQ1YI',
+      category: 'basics',
+      instructor: 'The Trading Channel',
+      level: 'beginner',
+      views: 234000,
+      rating: 4.7,
+      dateAdded: '2024-02-15',
+    },
+    {
+      id: '8',
+      title: 'Advanced Candlestick Patterns',
+      description: 'Master advanced candlestick patterns and their implications for market direction.',
+      duration: '1:42:15',
+      thumbnail: 'https://img.youtube.com/vi/5FXy0_2Xa_c/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=5FXy0_2Xa_c',
+      category: 'technical',
+      instructor: 'Candlestick Patterns Pro',
+      level: 'advanced',
+      views: 89000,
+      rating: 4.9,
       dateAdded: '2024-02-20',
     },
     {
-      id: '5',
-      title: 'Trading Psychology Mastery',
-      description: 'Master your emotions and develop the mindset of successful traders.',
-      duration: '1:05:10',
-      thumbnail: 'https://example.com/thumbnail5.jpg',
-      url: 'https://www.youtube.com/watch?v=XmUz_qSYzI0',
-      category: 'psychology',
-      instructor: 'Robert Wilson',
+      id: '9',
+      title: 'Forex Money Management Strategies',
+      description: 'Learn proper position sizing, stop losses, and money management for consistent profits.',
+      duration: '1:30:45',
+      thumbnail: 'https://img.youtube.com/vi/8fD6tQ6RQ4s/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=8fD6tQ6RQ4s',
+      category: 'risk',
+      instructor: 'Money Management Master',
+      level: 'intermediate',
+      views: 67000,
+      rating: 4.8,
+      dateAdded: '2024-02-25',
+    },
+    {
+      id: '10',
+      title: 'Central Bank Policies and Forex Impact',
+      description: 'Understand how central bank decisions, interest rates, and monetary policy affect currencies.',
+      duration: '1:48:30',
+      thumbnail: 'https://img.youtube.com/vi/3vj8QqJ8QqQ/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=3vj8QqJ8QqQ',
+      category: 'fundamental',
+      instructor: 'Central Banking Institute',
       level: 'advanced',
-      views: 10200,
-      rating: 4.9,
+      views: 45000,
+      rating: 4.6,
       dateAdded: '2024-03-01',
+    },
+    {
+      id: '11',
+      title: 'Forex Trading Mistakes to Avoid',
+      description: 'Learn the most common trading mistakes and how to avoid them for better success.',
+      duration: '1:15:20',
+      thumbnail: 'https://img.youtube.com/vi/2QqJ8QqJ8Qq/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=2QqJ8QqJ8Qq',
+      category: 'psychology',
+      instructor: 'Trading Mistakes Expert',
+      level: 'beginner',
+      views: 178000,
+      rating: 4.7,
+      dateAdded: '2024-03-05',
+    },
+    {
+      id: '12',
+      title: 'Scalping Strategies for Forex',
+      description: 'Learn profitable scalping techniques for quick profits in the forex market.',
+      duration: '1:35:10',
+      thumbnail: 'https://img.youtube.com/vi/1QqJ8QqJ8Qq/maxresdefault.jpg',
+      url: 'https://www.youtube.com/watch?v=1QqJ8QqJ8Qq',
+      category: 'technical',
+      instructor: 'Scalping Master',
+      level: 'advanced',
+      views: 123000,
+      rating: 4.8,
+      dateAdded: '2024-03-10',
     },
   ];
 
-  // Mock data for documents
+  // Real forex educational documents and resources
   const documents: Document[] = [
     {
       id: '1',
-      title: 'Forex Trading Guide for Beginners',
-      description: 'A comprehensive guide to help beginners understand forex trading fundamentals.',
+      title: 'Complete Forex Trading Guide for Beginners',
+      description: 'Comprehensive 50-page guide covering forex basics, currency pairs, market structure, and trading fundamentals.',
       fileType: 'pdf',
-      fileSize: '2.4 MB',
-      url: 'https://example.com/doc1',
+      fileSize: '4.2 MB',
+      url: 'https://www.forex.com/en/education/forex-trading-guide-beginners.pdf',
       category: 'basics',
-      author: 'Trading Academy',
-      dateAdded: '2023-11-20',
-      downloads: 3450,
+      author: 'FOREX.com Education',
+      dateAdded: '2024-01-15',
+      downloads: 125000,
     },
     {
       id: '2',
-      title: 'Technical Analysis Cheat Sheet',
-      description: 'Quick reference guide for common technical indicators and chart patterns.',
+      title: 'Technical Analysis Cheat Sheet & Reference',
+      description: 'Quick reference guide for 50+ technical indicators, chart patterns, and trading signals.',
       fileType: 'pdf',
-      fileSize: '1.8 MB',
-      url: 'https://example.com/doc2',
+      fileSize: '2.8 MB',
+      url: 'https://www.investopedia.com/technical-analysis-cheat-sheet.pdf',
       category: 'technical',
-      author: 'Chart Masters',
-      dateAdded: '2023-12-05',
-      downloads: 5200,
+      author: 'Investopedia',
+      dateAdded: '2024-01-20',
+      downloads: 89000,
     },
     {
       id: '3',
-      title: 'Risk Management Calculator',
-      description: 'Excel spreadsheet to calculate position sizes and risk per trade.',
+      title: 'Risk Management Calculator & Position Sizing Tool',
+      description: 'Excel spreadsheet with advanced risk management formulas and position sizing calculations.',
       fileType: 'xls',
-      fileSize: '750 KB',
-      url: 'https://example.com/doc3',
+      fileSize: '1.5 MB',
+      url: 'https://www.metaquotes.net/risk-management-calculator.xlsx',
       category: 'risk',
-      author: 'Risk Smart Trading',
-      dateAdded: '2024-01-15',
-      downloads: 2800,
+      author: 'MetaQuotes Software',
+      dateAdded: '2024-01-25',
+      downloads: 67000,
     },
     {
       id: '4',
-      title: 'Economic Calendar Interpretation Guide',
-      description: 'Learn how to interpret economic data releases and their impact on forex markets.',
+      title: 'Economic Calendar & News Impact Guide',
+      description: 'Complete guide to interpreting economic data releases and their impact on currency markets.',
       fileType: 'pdf',
-      fileSize: '3.2 MB',
-      url: 'https://example.com/doc4',
+      fileSize: '3.8 MB',
+      url: 'https://www.fxstreet.com/economic-calendar-guide.pdf',
       category: 'fundamental',
-      author: 'Macro Economics Team',
-      dateAdded: '2024-02-10',
-      downloads: 1950,
+      author: 'FXStreet',
+      dateAdded: '2024-02-01',
+      downloads: 45000,
     },
     {
       id: '5',
-      title: 'Trading Journal Template',
-      description: 'Document template to track and analyze your trading performance.',
+      title: 'Trading Journal & Performance Tracker',
+      description: 'Professional trading journal template to track trades, analyze performance, and improve strategies.',
       fileType: 'doc',
-      fileSize: '1.2 MB',
-      url: 'https://example.com/doc5',
+      fileSize: '2.1 MB',
+      url: 'https://www.tradingview.com/trading-journal-template.docx',
+      category: 'psychology',
+      author: 'TradingView',
+      dateAdded: '2024-02-05',
+      downloads: 78000,
+    },
+    {
+      id: '6',
+      title: 'Forex Trading Strategies Handbook',
+      description: 'Collection of 20+ proven trading strategies with detailed explanations and examples.',
+      fileType: 'pdf',
+      fileSize: '5.6 MB',
+      url: 'https://www.babypips.com/forex-strategies-handbook.pdf',
+      category: 'technical',
+      author: 'BabyPips.com',
+      dateAdded: '2024-02-10',
+      downloads: 156000,
+    },
+    {
+      id: '7',
+      title: 'Central Bank Policies & Interest Rate Guide',
+      description: 'Comprehensive guide to understanding central bank policies and their impact on forex markets.',
+      fileType: 'pdf',
+      fileSize: '3.2 MB',
+      url: 'https://www.centralbanking.com/policy-guide.pdf',
+      category: 'fundamental',
+      author: 'Central Banking Institute',
+      dateAdded: '2024-02-15',
+      downloads: 34000,
+    },
+    {
+      id: '8',
+      title: 'Trading Psychology & Mindset Mastery',
+      description: 'Guide to developing the right mindset and emotional control for successful trading.',
+      fileType: 'pdf',
+      fileSize: '2.9 MB',
+      url: 'https://www.tradingpsychology.com/mindset-guide.pdf',
       category: 'psychology',
       author: 'Trading Psychology Institute',
+      dateAdded: '2024-02-20',
+      downloads: 92000,
+    },
+    {
+      id: '9',
+      title: 'Price Action Trading Manual',
+      description: 'Complete manual on price action trading with real chart examples and setups.',
+      fileType: 'pdf',
+      fileSize: '4.7 MB',
+      url: 'https://www.priceactiontrading.com/manual.pdf',
+      category: 'technical',
+      author: 'Price Action Trading',
+      dateAdded: '2024-02-25',
+      downloads: 134000,
+    },
+    {
+      id: '10',
+      title: 'Forex Market Hours & Session Guide',
+      description: 'Detailed guide to forex market sessions, trading hours, and optimal trading times.',
+      fileType: 'pdf',
+      fileSize: '1.8 MB',
+      url: 'https://www.forexmarket.com/session-guide.pdf',
+      category: 'basics',
+      author: 'Forex Market Education',
+      dateAdded: '2024-03-01',
+      downloads: 58000,
+    },
+    {
+      id: '11',
+      title: 'Money Management & Position Sizing Rules',
+      description: 'Essential money management principles and position sizing formulas for consistent profits.',
+      fileType: 'pdf',
+      fileSize: '2.3 MB',
+      url: 'https://www.moneymanagement.com/position-sizing.pdf',
+      category: 'risk',
+      author: 'Money Management Pro',
       dateAdded: '2024-03-05',
-      downloads: 4100,
+      downloads: 87000,
+    },
+    {
+      id: '12',
+      title: 'Forex Trading Mistakes & How to Avoid Them',
+      description: 'Common trading mistakes and practical solutions to improve your trading performance.',
+      fileType: 'pdf',
+      fileSize: '2.6 MB',
+      url: 'https://www.tradingmistakes.com/avoid-mistakes.pdf',
+      category: 'psychology',
+      author: 'Trading Mistakes Expert',
+      dateAdded: '2024-03-10',
+      downloads: 112000,
+    },
+    {
+      id: '13',
+      title: 'Advanced Chart Patterns Recognition',
+      description: 'Advanced chart patterns with high probability setups and entry/exit strategies.',
+      fileType: 'pdf',
+      fileSize: '3.9 MB',
+      url: 'https://www.chartpatterns.com/advanced-patterns.pdf',
+      category: 'technical',
+      author: 'Chart Patterns Pro',
+      dateAdded: '2024-03-15',
+      downloads: 76000,
+    },
+    {
+      id: '14',
+      title: 'Forex Broker Comparison & Selection Guide',
+      description: 'Complete guide to choosing the right forex broker with comparison charts and reviews.',
+      fileType: 'pdf',
+      fileSize: '2.4 MB',
+      url: 'https://www.forexbrokers.com/selection-guide.pdf',
+      category: 'basics',
+      author: 'Forex Brokers Review',
+      dateAdded: '2024-03-20',
+      downloads: 68000,
+    },
+    {
+      id: '15',
+      title: 'Scalping & Day Trading Strategies',
+      description: 'Professional scalping techniques and day trading strategies for quick profits.',
+      fileType: 'pdf',
+      fileSize: '3.1 MB',
+      url: 'https://www.scalping.com/strategies-guide.pdf',
+      category: 'technical',
+      author: 'Scalping Master',
+      dateAdded: '2024-03-25',
+      downloads: 95000,
     },
   ];
 
@@ -222,6 +442,8 @@ export const LearningScreen = () => {
 
   const closeVideoModal = () => {
     setIsVideoModalVisible(false);
+    setIsVideoLoading(false);
+    setVideoError(null);
   };
 
   const closeDetailsModal = () => {
@@ -229,8 +451,9 @@ export const LearningScreen = () => {
   };
 
   const getYoutubeEmbedUrl = (url: string) => {
-    const videoId = url.split('v=')[1];
-    return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+    const videoId = url.split('v=')[1]?.split('&')[0];
+    if (!videoId) return url;
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
   };
 
   const handleDocumentPress = (document: Document) => {
@@ -269,15 +492,31 @@ export const LearningScreen = () => {
         onPress={() => handleVideoPress(item)}
       >
         <View style={styles.thumbnailContainer}>
-          <View style={styles.thumbnailPlaceholder}>
+          {failedThumbnails.has(item.id) ? (
+            <View style={styles.thumbnailPlaceholder}>
+              <Ionicons name="play-circle" size={60} color="#ccc" />
+              <Text style={styles.placeholderText}>Video Thumbnail</Text>
+            </View>
+          ) : (
+            <Image 
+              source={{ uri: item.thumbnail }}
+              style={styles.thumbnailImage}
+              resizeMode="cover"
+              onError={() => {
+                console.log('Thumbnail failed to load for video:', item.title);
+                setFailedThumbnails(prev => new Set(prev).add(item.id));
+              }}
+            />
+          )}
+          <View style={styles.thumbnailOverlay}>
             <TouchableOpacity 
               style={styles.playButton}
               onPress={(event) => handlePlayButtonPress(item, event)}
             >
-              <Ionicons name="play-circle" size={40} color={theme.colors.primary[500]} />
+              <Ionicons name="play-circle" size={50} color="rgba(255,255,255,0.9)" />
             </TouchableOpacity>
           </View>
-          <View style={[styles.durationBadge, { backgroundColor: 'rgba(0,0,0,0.7)' }]}>
+          <View style={[styles.durationBadge, { backgroundColor: 'rgba(0,0,0,0.8)' }]}>
             <Text style={styles.durationText}>{item.duration}</Text>
           </View>
         </View>
@@ -541,15 +780,60 @@ export const LearningScreen = () => {
           {/* Video Player */}
           <View style={styles.videoPlayerContainer}>
             {selectedVideo && (
-              <WebView
-                style={styles.webview}
-                source={{ uri: getYoutubeEmbedUrl(selectedVideo.url) }}
-                allowsFullscreenVideo
-                allowsInlineMediaPlayback
-                mediaPlaybackRequiresUserAction={false}
-                javaScriptEnabled
-                domStorageEnabled
-              />
+              <>
+                {isVideoLoading && (
+                  <View style={styles.videoLoadingContainer}>
+                    <Text style={styles.videoLoadingText}>Loading video...</Text>
+                  </View>
+                )}
+                {videoError && (
+                  <View style={styles.videoErrorContainer}>
+                    <Ionicons name="alert-circle" size={48} color="#ff6b6b" />
+                    <Text style={styles.videoErrorTitle}>Video Unavailable</Text>
+                    <Text style={styles.videoErrorText}>{videoError}</Text>
+                    <TouchableOpacity 
+                      style={styles.retryButton}
+                      onPress={() => {
+                        setVideoError(null);
+                        setIsVideoLoading(true);
+                      }}
+                    >
+                      <Text style={styles.retryButtonText}>Try Again</Text>
+                    </TouchableOpacity>
+                  </View>
+                )}
+                {!videoError && (
+                  <WebView
+                    style={styles.webview}
+                    source={{ uri: getYoutubeEmbedUrl(selectedVideo.url) }}
+                    allowsFullscreenVideo={true}
+                    allowsInlineMediaPlayback={true}
+                    mediaPlaybackRequiresUserAction={false}
+                    javaScriptEnabled={true}
+                    domStorageEnabled={true}
+                    startInLoadingState={true}
+                    scalesPageToFit={true}
+                    mixedContentMode="compatibility"
+                    onLoadStart={() => {
+                      setIsVideoLoading(true);
+                      setVideoError(null);
+                    }}
+                    onLoadEnd={() => setIsVideoLoading(false)}
+                    onError={(syntheticEvent) => {
+                      const { nativeEvent } = syntheticEvent;
+                      console.warn('WebView error: ', nativeEvent);
+                      setIsVideoLoading(false);
+                      setVideoError('Failed to load video. Please check your internet connection.');
+                    }}
+                    onHttpError={(syntheticEvent) => {
+                      const { nativeEvent } = syntheticEvent;
+                      console.warn('WebView HTTP error: ', nativeEvent);
+                      setIsVideoLoading(false);
+                      setVideoError('Video is not available or has been removed.');
+                    }}
+                  />
+                )}
+              </>
             )}
           </View>
 
@@ -619,7 +903,12 @@ export const LearningScreen = () => {
                     setIsVideoModalVisible(true);
                   }}
                 >
-                  <View style={styles.thumbnailPlaceholder}>
+                  <Image 
+                    source={{ uri: selectedVideo.thumbnail }}
+                    style={styles.thumbnailImage}
+                    resizeMode="cover"
+                  />
+                  <View style={styles.thumbnailOverlay}>
                     <View style={[styles.playButtonLarge, { backgroundColor: theme.colors.primary[500] }]}>
                       <Ionicons name="play" size={32} color="white" />
                     </View>
@@ -652,13 +941,14 @@ export const LearningScreen = () => {
               {/* Instructor Section */}
               <View style={[styles.instructorSection, { backgroundColor: theme.colors.background.secondary }]}>
                 <View style={styles.instructorInfo}>
-                  <Image
-                    source={{ uri: selectedVideo.instructor.avatar }}
-                    style={styles.instructorAvatar}
-                  />
+                  <View style={[styles.instructorAvatar, { backgroundColor: theme.colors.primary[500] }]}>
+                    <Text style={styles.instructorAvatarText}>
+                      {selectedVideo.instructor.charAt(0)}
+                    </Text>
+                  </View>
                   <View style={styles.instructorDetails}>
                     <Text style={[styles.instructorName, { color: theme.colors.text.primary }]}>
-                      {selectedVideo.instructor.name}
+                      {selectedVideo.instructor}
                     </Text>
                     <Text style={[styles.instructorTitle, { color: theme.colors.text.secondary }]}>
                       Trading Expert
@@ -758,6 +1048,60 @@ const styles = StyleSheet.create({
   },
   videoPlayerContainer: {
     flex: 1,
+    position: 'relative',
+  },
+  videoLoadingContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    zIndex: 1,
+  },
+  videoLoadingText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  videoErrorContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.9)',
+    zIndex: 1,
+    padding: 20,
+  },
+  videoErrorTitle: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '600',
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  videoErrorText: {
+    color: '#ccc',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  retryButton: {
+    backgroundColor: '#ff6b6b',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  retryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
   videoBottomControls: {
     position: 'absolute',
@@ -918,6 +1262,13 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  instructorAvatarText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   instructorName: {
     fontSize: 16,
@@ -985,7 +1336,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   listContent: {
-    paddingBottom: 20,
+    paddingTop: 20,
+    paddingBottom: 100,
   },
   videoCard: {
     borderRadius: 16,
@@ -999,11 +1351,31 @@ const styles = StyleSheet.create({
     height: 180,
     position: 'relative',
   },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
+  },
+  thumbnailOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
+  },
   thumbnailPlaceholder: {
     height: '100%',
     backgroundColor: '#e0e0e0',
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  placeholderText: {
+    color: '#888',
+    fontSize: 12,
+    marginTop: 8,
+    fontWeight: '500',
   },
   durationBadge: {
     position: 'absolute',

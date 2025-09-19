@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ActivityIndicator, Alert, Modal, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useAppStore } from '../../src/store/appStore';
 import { useCurrentTheme } from '../../src/store/themeStore';
@@ -92,152 +92,169 @@ export default function ProfileScreen() {
         contentContainerStyle={{ padding: 10, paddingBottom: 40 }}
       >
         {/* Header with Avatar */}
-        <View style={styles.headerContainer}>
-          <View style={styles.avatarWrapper}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
+        <View style={(styles as any).headerContainer}>
+          <View style={(styles as any).avatarWrapper}>
+            <View style={(styles as any).avatar}>
+              <Text style={(styles as any).avatarText}>
                 {getInitials(user.first_name, user.last_name)}
               </Text>
             </View>
           </View>
-          <Text style={styles.nameText}>
+          <Text style={(styles as any).nameText}>
             {user.first_name} {user.last_name}
           </Text>
-          <View style={styles.userTypePill}>
+          <View style={(styles as any).userTypePill}>
             <Ionicons name="star" size={16} color={ORANGE} style={{ marginRight: 4 }} />
-            <Text style={styles.userTypeText}>{user.user_type}</Text>
+            <Text style={(styles as any).userTypeText}>{user.user_type}</Text>
           </View>
-          <Text style={styles.emailText}>{user.email}</Text>
+          <Text style={(styles as any).emailText}>{user.email}</Text>
         </View>
 
         {/* Trading Stats */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Trading Statistics</Text>
-          <View style={styles.statsGrid}>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{user.total_trades}</Text>
-              <Text style={styles.statLabel}>Total Trades</Text>
+        <View style={(styles as any).section}>
+          <Text style={(styles as any).sectionTitle}>Trading Statistics</Text>
+          <View style={(styles as any).statsGrid}>
+            <View style={(styles as any).statCard}>
+              <Text style={(styles as any).statValue}>{user.total_trades}</Text>
+              <Text style={(styles as any).statLabel}>Total Trades</Text>
             </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{user.success_rate}</Text>
-              <Text style={styles.statLabel}>Success Rate</Text>
+            <View style={(styles as any).statCard}>
+              <Text style={(styles as any).statValue}>{user.success_rate}</Text>
+              <Text style={(styles as any).statLabel}>Success Rate</Text>
             </View>
-            <View style={styles.statCard}>
-              <Text style={styles.statValue}>{user.total_profit}</Text>
-              <Text style={styles.statLabel}>Total Profit</Text>
+            <View style={(styles as any).statCard}>
+              <Text style={(styles as any).statValue}>{user.total_profit}</Text>
+              <Text style={(styles as any).statLabel}>Total Profit</Text>
             </View>
           </View>
         </View>
 
         {/* Account Settings */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account</Text>
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={openEditModal}>
+        <View style={(styles as any).section}>
+          <Text style={(styles as any).sectionTitle}>Account</Text>
+          <View style={(styles as any).card}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={openEditModal}>
               <Ionicons name="person" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Edit Profile</Text>
+              <Text style={(styles as any).cardText}>Edit Profile</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/notifications')}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/notifications')}>
               <Ionicons name="notifications" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Notifications</Text>
+              <Text style={(styles as any).cardText}>Notifications</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
               <Ionicons name="shield-checkmark" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Security</Text>
+              <Text style={(styles as any).cardText}>Security</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
+            <TouchableOpacity style={[(styles as any).cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
               <Ionicons name="card" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Payment Methods</Text>
+              <Text style={(styles as any).cardText}>Payment Methods</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Trading Preferences */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Trading Preferences</Text>
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/analytics')}>
+        <View style={(styles as any).section}>
+          <Text style={(styles as any).sectionTitle}>Trading Preferences</Text>
+          <View style={(styles as any).card}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/analytics')}>
               <Ionicons name="trending-up" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Risk Management</Text>
+              <Text style={(styles as any).cardText}>Risk Management</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
               <Ionicons name="time" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Trading Hours</Text>
+              <Text style={(styles as any).cardText}>Trading Hours</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
+            <TouchableOpacity style={[(styles as any).cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/settings')}>
               <Ionicons name="settings" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Trading Settings</Text>
+              <Text style={(styles as any).cardText}>Trading Settings</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Subscription */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Subscription</Text>
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/subscription')}>
+        <View style={(styles as any).section}>
+          <Text style={(styles as any).sectionTitle}>Subscription</Text>
+          <View style={(styles as any).card}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/subscription')}>
               <Ionicons name="star" size={24} color={ORANGE} />
-              <Text style={styles.cardText}>Manage Subscription</Text>
+              <Text style={(styles as any).cardText}>Manage Subscription</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/subscription')}>
+            <TouchableOpacity style={[(styles as any).cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/subscription')}>
               <Ionicons name="card" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Billing History</Text>
+              <Text style={(styles as any).cardText}>Billing History</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Market Watchlist Link */}
+        <View style={(styles as any).section}>
+          <Text style={(styles as any).sectionTitle}>Trading</Text>
+          <View style={(styles as any).card}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/markets')}>
+              <Ionicons name="trending-up" size={24} color={BLUE} />
+              <Text style={(styles as any).cardText}>Market Watchlist</Text>
+              <Ionicons name="chevron-forward" size={24} color={LIGHT} />
+            </TouchableOpacity>
+            <TouchableOpacity style={[(styles as any).cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => router.push('/(app)/analytics')}>
+              <Ionicons name="analytics" size={24} color={BLUE} />
+              <Text style={(styles as any).cardText}>Trading Analytics</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Learning & Resources */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Learning & Resources</Text>
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/learning')}>
+        <View style={(styles as any).section}>
+          <Text style={(styles as any).sectionTitle}>Learning & Resources</Text>
+          <View style={(styles as any).card}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => router.push('/(app)/learning')}>
               <Ionicons name="book" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Learning Center</Text>
+              <Text style={(styles as any).cardText}>Learning Center</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Support & Help */}
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support</Text>
-          <View style={styles.card}>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => Alert.alert('Help', 'Help & Support coming soon!')}>
+        <View style={(styles as any).section}>
+          <Text style={(styles as any).sectionTitle}>Support</Text>
+          <View style={(styles as any).card}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => Alert.alert('Help', 'Help & Support coming soon!')}>
               <Ionicons name="help-circle" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Help & Support</Text>
+              <Text style={(styles as any).cardText}>Help & Support</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={styles.cardRow} activeOpacity={0.7} onPress={() => Alert.alert('Terms', 'Terms & Conditions coming soon!')}>
+            <TouchableOpacity style={(styles as any).cardRow} activeOpacity={0.7} onPress={() => Alert.alert('Terms', 'Terms & Conditions coming soon!')}>
               <Ionicons name="document-text" size={24} color={BLUE} />
-              <Text style={styles.cardText}>Terms & Conditions</Text>
+              <Text style={(styles as any).cardText}>Terms & Conditions</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => Alert.alert('About', 'About App coming soon!')}>
+            <TouchableOpacity style={[(styles as any).cardRow, { borderBottomWidth: 0 }]} activeOpacity={0.7} onPress={() => Alert.alert('About', 'About App coming soon!')}>
               <Ionicons name="information-circle" size={24} color={BLUE} />
-              <Text style={styles.cardText}>About App</Text>
+              <Text style={(styles as any).cardText}>About App</Text>
               <Ionicons name="chevron-forward" size={24} color={LIGHT} />
             </TouchableOpacity>
           </View>
         </View>
 
         {/* Logout Button */}
-        <View style={styles.section}>
+        <View style={(styles as any).section}>
           <TouchableOpacity
             onPress={handleLogout}
-            style={styles.logoutBtn}
+            style={(styles as any).logoutBtn}
             activeOpacity={0.8}
           >
             <Ionicons name="log-out" size={22} color="#fff" />
-            <Text style={styles.logoutText}>Sign Out</Text>
+            <Text style={(styles as any).logoutText}>Sign Out</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -504,4 +521,4 @@ const modalStyles = StyleSheet.create({
     fontWeight: '700',
     fontSize: 16,
   },
-});
+} as const);

@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
   FadeInDown,
   FadeInUp
 } from 'react-native-reanimated';
+import { LearningScreen } from '../../src/screens/learning/LearningScreen';
 import { useCurrentTheme } from '../../src/store/themeStore';
 
 const ORANGE = '#f58220';
@@ -265,25 +266,21 @@ export default function HomeScreen() {
   );
 
   return (
-    <ScrollView 
-      style={styles.container}
-      refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={onRefresh}
-          colors={[ORANGE]}
-          tintColor={ORANGE}
-        />
-      }
-    >
-      {renderHeader()}
-      {renderAccountOverview()}
-      {renderQuickActions()}
-      {renderMarketWatchlist()}
-      {renderTradingSignals()}
-      
-      <View style={styles.bottomSpacing} />
-    </ScrollView>
+      <ScrollView 
+        style={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[ORANGE]}
+            tintColor={ORANGE}
+          />
+        }
+        contentContainerStyle={{ paddingBottom: 100 }}
+      >
+        {renderHeader()}
+        <LearningScreen />
+      </ScrollView>
   );
 }
 
