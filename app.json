@@ -17,7 +17,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.kampos.panda"
+      "package": "com.ealfred1.panda"
     },
     "web": {
       "bundler": "metro",
@@ -42,9 +42,9 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "82c765c1-f928-45b8-8cad-ff80874196b7"
+        "projectId": "f1541b6f-7560-4d90-8114-9c74244e8348"
       }
     },
-    "owner": "kampos"
+    "owner": "ealfred1"
   }
 }
