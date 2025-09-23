@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Animated, {
   FadeInDown,
   FadeInUp
 } from 'react-native-reanimated';
-import { LearningScreen } from '../../src/screens/learning/LearningScreen';
 import { useCurrentTheme } from '../../src/store/themeStore';
 
 const ORANGE = '#f58220';
@@ -18,6 +18,7 @@ const BORDER = '#f0f0f0';
 
 export default function HomeScreen() {
   const theme = useCurrentTheme();
+  const router = useRouter();
   const [refreshing, setRefreshing] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
@@ -46,11 +47,12 @@ export default function HomeScreen() {
     { symbol: 'AUD/USD', price: '0.6589', change: '+0.0012', changePercent: '+0.18%', isPositive: true },
   ];
 
-  // Mock trading signals
-  const tradingSignals = [
-    { pair: 'EUR/USD', type: 'BUY', entry: '1.0850', target: '1.0900', stopLoss: '1.0800', confidence: '85%' },
-    { pair: 'GBP/USD', type: 'SELL', entry: '1.2650', target: '1.2600', stopLoss: '1.2700', confidence: '78%' },
-    { pair: 'USD/JPY', type: 'BUY', entry: '149.80', target: '150.50', stopLoss: '149.30', confidence: '82%' },
+  // Bot Analysis data
+  const botAnalysis = [
+    { pair: 'EUR/USD', status: 'active', profit: '+$456', trades: 23, confidence: '85%' },
+    { pair: 'GBP/USD', status: 'active', profit: '+$234', trades: 18, confidence: '78%' },
+    { pair: 'USD/JPY', status: 'active', profit: '+$789', trades: 31, confidence: '82%' },
+    { pair: 'AUD/USD', status: 'paused', profit: '-$123', trades: 12, confidence: '65%' },
   ];
 
   const onRefresh = async () => {
@@ -144,87 +146,37 @@ export default function HomeScreen() {
     </Animated.View>
   );
 
-  // Market watchlist
-  const renderMarketWatchlist = () => (
+  // Bot Analysis
+  const renderBotAnalysis = () => (
     <Animated.View entering={FadeInUp.delay(400).springify()}>
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Market Watchlist</Text>
-        <TouchableOpacity style={styles.viewAllButton}>
+        <Text style={styles.sectionTitle}>Bot Analysis</Text>
+        <TouchableOpacity 
+          style={styles.viewAllButton}
+          onPress={() => router.push('/(app)/bot')}
+        >
           <Text style={styles.viewAllText}>View All</Text>
         </TouchableOpacity>
       </View>
       
-      <View style={styles.card}>
-        {marketWatchlist.map((pair, index) => (
-          <View key={index} style={[styles.pairRow, index === marketWatchlist.length - 1 && { borderBottomWidth: 0 }]}>
-            <View style={styles.pairInfo}>
-              <Text style={styles.pairSymbol}>{pair.symbol}</Text>
-              <Text style={styles.pairName}>
-                {pair.symbol === 'EUR/USD' ? 'Euro / US Dollar' :
-                 pair.symbol === 'GBP/USD' ? 'British Pound / US Dollar' :
-                 pair.symbol === 'USD/JPY' ? 'US Dollar / Japanese Yen' :
-                 'Australian Dollar / US Dollar'}
-              </Text>
-            </View>
-            
-            <View style={styles.pairPrice}>
-              <Text style={styles.priceValue}>{pair.price}</Text>
-              <View style={styles.changeContainer}>
-                <Ionicons 
-                  name={pair.isPositive ? 'trending-up' : 'trending-down'} 
-                  size={16} 
-                  color={pair.isPositive ? '#10b981' : '#ef4444'} 
-                />
-                <Text style={[styles.changeText, { color: pair.isPositive ? '#10b981' : '#ef4444' }]}>
-                  {pair.change} ({pair.changePercent})
-                </Text>
-              </View>
-            </View>
+      <View style={styles.botStatsGrid}>
+        <View style={styles.botStatCard}>
+          <View style={styles.botStatHeader}>
+            <Ionicons name="hardware-chip" size={20} color={ORANGE} />
+            <Text style={styles.botStatTitle}>Active Bots</Text>
           </View>
-        ))}
-      </View>
-    </Animated.View>
-  );
-
-  // Trading signals
-  const renderTradingSignals = () => (
-    <Animated.View entering={FadeInUp.delay(500).springify()}>
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Trading Signals</Text>
-        <TouchableOpacity style={styles.viewAllButton}>
-          <Text style={styles.viewAllText}>View All</Text>
-        </TouchableOpacity>
-      </View>
-      
-      <View style={styles.signalsContainer}>
-        {tradingSignals.map((signal, index) => (
-          <View key={index} style={styles.signalCard}>
-            <View style={styles.signalHeader}>
-              <View style={[styles.signalType, { backgroundColor: signal.type === 'BUY' ? '#10b981' : '#ef4444' }]}>
-                <Text style={styles.signalTypeText}>{signal.type}</Text>
-              </View>
-              <Text style={styles.signalPair}>{signal.pair}</Text>
-              <View style={styles.confidenceBadge}>
-                <Text style={styles.confidenceText}>{signal.confidence}</Text>
-              </View>
-            </View>
-            
-            <View style={styles.signalDetails}>
-              <View style={styles.signalRow}>
-                <Text style={styles.signalLabel}>Entry:</Text>
-                <Text style={styles.signalValue}>{signal.entry}</Text>
-              </View>
-              <View style={styles.signalRow}>
-                <Text style={styles.signalLabel}>Target:</Text>
-                <Text style={styles.signalValue}>{signal.target}</Text>
-              </View>
-              <View style={styles.signalRow}>
-                <Text style={styles.signalLabel}>Stop Loss:</Text>
-                <Text style={styles.signalValue}>{signal.stopLoss}</Text>
-              </View>
-            </View>
+          <Text style={styles.botStatValue}>3</Text>
+          <Text style={styles.botStatSubtext}>Running</Text>
+        </View>
+        
+        <View style={styles.botStatCard}>
+          <View style={styles.botStatHeader}>
+            <Ionicons name="trending-up" size={20} color="#10b981" />
+            <Text style={styles.botStatTitle}>Total Profit</Text>
           </View>
-        ))}
+          <Text style={[styles.botStatValue, { color: '#10b981' }]}>+$1,456</Text>
+          <Text style={styles.botStatSubtext}>Today</Text>
+        </View>
       </View>
     </Animated.View>
   );
@@ -234,32 +186,44 @@ export default function HomeScreen() {
     <Animated.View entering={FadeInUp.delay(600).springify()}>
       <Text style={styles.sectionTitle}>Quick Actions</Text>
       <View style={styles.actionsGrid}>
-        <TouchableOpacity style={styles.actionCard}>
-          <View style={[styles.actionIcon, { backgroundColor: ORANGE }]}>
-            <Ionicons name="add-circle" size={24} color="white" />
+        <TouchableOpacity 
+          style={styles.actionCard}
+          onPress={() => router.push('/(app)/subscription')}
+        >
+          <View style={[styles.actionIcon, { backgroundColor: '#8b5cf6' }]}>
+            <Ionicons name="card" size={24} color="white" />
           </View>
-          <Text style={styles.actionText}>New Trade</Text>
+          <Text style={styles.actionText}>Subscriptions</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.actionCard}>
+        <TouchableOpacity 
+          style={styles.actionCard}
+          onPress={() => router.push('/(tabs)/wallet')}
+        >
           <View style={[styles.actionIcon, { backgroundColor: BLUE }]}>
             <Ionicons name="arrow-down-circle" size={24} color="white" />
           </View>
           <Text style={styles.actionText}>Deposit</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.actionCard}>
+        <TouchableOpacity 
+          style={styles.actionCard}
+          onPress={() => router.push('/(app)/learning')}
+        >
           <View style={[styles.actionIcon, { backgroundColor: '#10b981' }]}>
-            <Ionicons name="arrow-up-circle" size={24} color="white" />
+            <Ionicons name="book" size={24} color="white" />
           </View>
-          <Text style={styles.actionText}>Withdraw</Text>
+          <Text style={styles.actionText}>Learning Center</Text>
         </TouchableOpacity>
         
-        <TouchableOpacity style={styles.actionCard}>
-          <View style={[styles.actionIcon, { backgroundColor: '#8b5cf6' }]}>
+        <TouchableOpacity 
+          style={styles.actionCard}
+          onPress={() => router.push('/(app)/analytics')}
+        >
+          <View style={[styles.actionIcon, { backgroundColor: '#f59e0b' }]}>
             <Ionicons name="analytics" size={24} color="white" />
           </View>
-          <Text style={styles.actionText}>Analytics</Text>
+          <Text style={styles.actionText}>Analysis</Text>
         </TouchableOpacity>
       </View>
     </Animated.View>
@@ -279,7 +243,10 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         {renderHeader()}
-        <LearningScreen />
+        {renderAccountOverview()}
+        {renderQuickActions()}
+        {renderBotAnalysis()}
+        <View style={styles.bottomSpacing} />
       </ScrollView>
   );
 }
@@ -300,6 +267,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: BORDER,
     borderTopWidth: 0,
+    paddingRight: 80,
   },
   headerContent: {
     flexDirection: 'row',
@@ -487,69 +455,48 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 4,
   },
-  signalsContainer: {
-    paddingHorizontal: 20,
-    marginBottom: 24,
-  },
-  signalCard: {
-    backgroundColor: BG,
-    borderRadius: 16,
-    padding: 18,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: BORDER,
-  },
-  signalHeader: {
+  botStatsGrid: {
     flexDirection: 'row',
-    alignItems: 'center',
+    gap: 12,
+    paddingHorizontal: 20,
     marginBottom: 16,
   },
-  signalType: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
-    marginRight: 12,
-  },
-  signalTypeText: {
-    color: 'white',
-    fontSize: 12,
-    fontWeight: '600',
-  },
-  signalPair: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: DARK,
+  botStatCard: {
     flex: 1,
-  },
-  confidenceBadge: {
-    backgroundColor: GRAY,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 12,
+    backgroundColor: BG,
+    borderRadius: 16,
+    padding: 16,
     borderWidth: 1,
     borderColor: BORDER,
-  },
-  confidenceText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: ORANGE,
-  },
-  signalDetails: {
-    gap: 8,
-  },
-  signalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
   },
-  signalLabel: {
-    fontSize: 14,
-    color: LIGHT,
+  botStatHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
   },
-  signalValue: {
-    fontSize: 14,
-    fontWeight: '600',
+  botStatTitle: {
+    fontSize: 12,
+    color: LIGHT,
+    fontWeight: '500',
+    marginLeft: 8,
+  },
+  botStatValue: {
+    fontSize: 20,
+    fontWeight: '700',
     color: DARK,
+    marginBottom: 4,
+  },
+  botStatSubtext: {
+    fontSize: 11,
+    color: LIGHT,
+    fontWeight: '500',
+  },
+  statusBadge: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    marginLeft: 8,
   },
   actionsGrid: {
     flexDirection: 'row',
