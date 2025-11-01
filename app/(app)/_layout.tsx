@@ -15,6 +15,9 @@ export default function AppLayout() {
       <Stack.Screen name="markets" />
       <Stack.Screen name="analytics" />
       <Stack.Screen name="learning" />
+      <Stack.Screen name="upcoming-sessions" />
+      <Stack.Screen name="saved-sessions" />
+      <Stack.Screen name="video-call" />
     </Stack>
   );
 }

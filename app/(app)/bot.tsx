@@ -211,9 +211,11 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   headerGradient: {
-    paddingHorizontal: 24,
-    paddingVertical: 32,
-    borderRadius: 0,
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    paddingBottom: 32,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   headerTitle: {
     fontSize: 28,
@@ -304,7 +306,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: BG,
-    borderRadius: 18,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: BORDER,
     overflow: 'hidden',

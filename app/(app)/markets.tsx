@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: BG,
-    borderRadius: 18,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: BORDER,
     overflow: 'hidden',
@@ -352,7 +352,7 @@ const styles = StyleSheet.create({
   },
   signalCard: {
     backgroundColor: BG,
-    borderRadius: 18,
+    borderRadius: 16,
     padding: 20,
     borderWidth: 1,
     borderColor: BORDER,

@@ -12,6 +12,18 @@ export default function More() {
 
   const menuItems = [
     {
+      title: 'Upcoming Sessions',
+      icon: 'videocam',
+      route: 'upcoming-sessions' as const,
+      description: 'Join live trading classes and sessions'
+    },
+    {
+      title: 'Saved Sessions',
+      icon: 'bookmark',
+      route: 'saved-sessions' as const,
+      description: 'View your saved sessions for later'
+    },
+    {
       title: 'Subscription',
       icon: 'card',
       route: 'subscription' as const,
@@ -38,7 +50,14 @@ export default function More() {
   ];
 
   const handleNavigation = (route: string) => {
-    router.push(route as any);
+    // Handle special routes that need full path
+    if (route === 'upcoming-sessions' || route === 'saved-sessions') {
+      router.push(`/(app)/${route}` as any);
+    } else if (route === 'profile') {
+      router.push('/(tabs)/profile' as any);
+    } else {
+      router.push(`/(app)/${route}` as any);
+    }
   };
 
   const handleLogout = () => {
